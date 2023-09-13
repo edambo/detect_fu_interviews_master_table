@@ -53,7 +53,7 @@ book:
     - part: "Recruitment and Scheduling"
       # Make sure to type "chapters" again under each part.
       chapters: 
-      - sections/recruitment_scheduling.qmd
+        - sections/recruitment_scheduling.qmd
       
     - part: "Sociodemographic Information"
         
