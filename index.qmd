@@ -1,9 +1,0 @@
-# Overview 
-
-This website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see the primary public repository at: <https://github.com/brad-cannell/detect_fu_interviews_public>.
-
-For questions related to DETECT, please contact Dr. Brad Cannell at [Michael.B.Cannell\@uth.tmc.edu](mailto:Michael.B.Cannell@uth.tmc.edu).
-
-## About DETECT
-
-Eventually add a blurb that gives a little background about DETECT.
