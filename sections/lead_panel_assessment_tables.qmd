@@ -1,3 +1,3 @@
 # LEAD Panel Assessment
 
-This page contains tables summarising the LEAD panel assessment data. 
+This page contains tables that summarize the LEAD panel assessment data. 
