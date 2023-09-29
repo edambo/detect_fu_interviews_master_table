@@ -4,7 +4,7 @@ always_allow_html: yes
 
 # LEAD Panel Assessment
 
-This page contains tables that summarize the LEAD panel assessment data. 
+This page contains tables that summarize the LEAD Assessment Panel Data. The first table summarizes the data without grouping the rows by MedStar ID while the second table provides a summary of abuse determination for each unique MedStar ID.
 
 
 ```{r}
@@ -40,10 +40,6 @@ source("../R/cont_stats_grouped.R")
 # By group - Categorical columns
 source("../R/n_percent_ci_grouped.R")
 ```
-
-This page contains tables of baseline LEAD Panel Assessment characteristics for the DETECT F/U Interview participants. Statistics for the 
-
-
 <!-- # Analysis -->
 
 <!-- ## Add factor labels to certain columns --> 
@@ -81,10 +77,10 @@ lead_panelists_votes_cols <- c("panelist_discipline_5cat_f",  "healthcare_worker
 lead_panel_vote_summaries_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det",  "physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any")
 ```
 
-<!-- ## Create a data frame that contains summary statistics for the abuse votes by all the LEAD panelists (not summarized for each MedStar ID)  grouped by assessment type -->
+<!-- ## Create a data frame that contains summary statistics for the abuse votes by each of the LEAD panelists (not summarized for each MedStar ID)  grouped by assessment type -->
 
 ```{r}
-#| label: lead-panelists-votes-stats-list-overall
+#| label: lead-unsum-stats_list
 #| echo: false
 lead_unsum_stats_list <- lead_panelists_votes_cols  |> 
   rlang::set_names(lead_panelists_votes_cols) |> 
@@ -95,10 +91,10 @@ lead_unsum_stats_list <- lead_panelists_votes_cols  |>
       )
 ```
 
-<!-- ## Create a data frame that contains summary statistics for the abuse votes summarized for each MedStar ID and grouped by assessment type -->
+<!-- ## Create a data frame that contains summary statistics for the abuse determinations for each MedStar ID grouped by assessment type -->
 
 ```{r}
-#| label: lead-panel-vote-summaries-stats-list-overall
+#| label: lead-sum-stats-list
 #| echo: false
 lead_sum_stats_list <- lead_panel_vote_summaries_cols |>
     rlang::set_names(lead_panel_vote_summaries_cols) |> 
@@ -249,6 +245,8 @@ lead_unsum_table <- flextable(lead_unsum_table,
                   col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
                                "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
                                "formatted_stats_Post-detect assessment")) %>%
+  # Set caption
+  set_caption(lead_unsum_table, "Summary statistics for the abuse votes by each LEAD panelists (not summarized for each MedStar ID)") %>%
   
   # Alternatively shade each group
   bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
@@ -266,7 +264,7 @@ lead_unsum_table <- flextable(lead_unsum_table,
   ) %>%
   
   # Format width of table
-  width(width = 0.75)
+  width(width = 0.88)
 
 
 
@@ -275,6 +273,8 @@ lead_sum_table   <- flextable(lead_sum_table,
                   col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
                                "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
                                "formatted_stats_Post-detect assessment")) %>%
+  # Set caption
+  set_caption(lead_sum_table, "Summary statistics for the abuse determinations for each MedStar ID grouped by assessment type") %>%
   
   # Alternatively shade each group
   bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
@@ -292,7 +292,7 @@ lead_sum_table   <- flextable(lead_sum_table,
   ) %>%
   
   # Format width of table
-  width(width = 0.75) 
+  width(width = 0.88) 
 
 ```
 
