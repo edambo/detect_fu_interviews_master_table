@@ -1,3 +1,278 @@
+---
+always_allow_html: yes
+---
+
 # LEAD Panel Assessment
 
 This page contains tables that summarize the LEAD panel assessment data. 
+
+
+```{r}
+#| label: lead-panel-data-setup
+#| echo: false
+library(dplyr, warn.conflicts = FALSE)
+library(haven)
+library(freqtables)
+library(flextable)
+library(officer)
+
+# Import function that will be used to add shade to the table by variable name
+source("../R/add_shade_column.R")
+
+# Import the data that will be used to create the tables.
+lead_panelists_votes      <- readRDS("../data/lead_panel_assessment_import_derived/lead_panelists_votes.rds") 
+lead_panel_vote_summaries <- readRDS("../data/lead_panel_assessment_import_derived/lead_panel_vote_summaries.rds") 
+
+# Import functions that will be used to calculate statistics
+# Overall - Continuous columns
+source("../R/n_mean_ci.R")
+source("../R/n_median_ci.R")
+source("../R/cont_stats.R")
+
+# Overall - Categorical columns
+source("../R/n_percent_ci.R")
+
+# By group - Continuous columns
+source("../R/n_mean_ci_grouped.R")
+source("../R/n_median_ci_grouped.R")
+source("../R/cont_stats_grouped.R")
+
+# By group - Categorical columns
+source("../R/n_percent_ci_grouped.R")
+```
+
+This page contains tables of baseline LEAD Panel Assessment characteristics for the DETECT F/U Interview participants. Statistics for the 
+
+
+<!-- # Analysis -->
+
+<!-- ## Add factor labels to certain columns --> 
+
+```{r}
+#| echo: false
+lead_panelists_votes <- lead_panelists_votes %>%
+  mutate(
+    across(
+      .cols = c(healthcare_worker_2cat_f, physical_abuse_2cat_f : abandonment_2cat_f, xc_assessment_screened_2cat_f),
+      .fns  = ~factor(.x, levels = c("0", "1"),
+                      labels = c("No", "Yes")
+                     ),
+      .names = "{col}"
+    )
+  )
+```
+
+
+<!-- ## Create lists of columns to analyze -->
+
+```{r}
+#| label: lead-panelists-votes-cols
+#| echo: false
+
+# These columns contain non-manipulated columns from the LEAD panel assessment
+lead_panelists_votes_cols <- c("panelist_discipline_5cat_f",  "healthcare_worker_2cat_f",  "physical_abuse_2cat_f",  "sexual_abuse_2cat_f",  "emotional_psycho_abuse_2cat_f",  "neglect_2cat_f",  "self_neglect_2cat_f",  "financial_exploitation_2cat_f",  "abandonment_2cat_f",  "xc_assessment_screened_2cat_f")
+```
+
+```{r}
+#| label: lead-panel-vote-summaries-cols
+#| echo: false
+
+# These columns contain calculated summary columns from the LEAD panel assessment for each unique MedStar ID
+lead_panel_vote_summaries_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det",  "physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any")
+```
+
+<!-- ## Create a data frame that contains summary statistics for the abuse votes by all the LEAD panelists (not summarized for each MedStar ID)  grouped by assessment type -->
+
+```{r}
+#| label: lead-panelists-votes-stats-list-overall
+#| echo: false
+lead_unsum_stats_list <- lead_panelists_votes_cols  |> 
+  rlang::set_names(lead_panelists_votes_cols) |> 
+  purrr::map(
+      ~ lead_panelists_votes |> 
+          filter(!is.na(assessment_type_3cat_f)) |> 
+          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
+      )
+```
+
+<!-- ## Create a data frame that contains summary statistics for the abuse votes summarized for each MedStar ID and grouped by assessment type -->
+
+```{r}
+#| label: lead-panel-vote-summaries-stats-list-overall
+#| echo: false
+lead_sum_stats_list <- lead_panel_vote_summaries_cols |>
+    rlang::set_names(lead_panel_vote_summaries_cols) |> 
+    purrr::map(
+      ~ lead_panel_vote_summaries |> 
+          filter(!is.na(assessment_type_3cat_f)) |> 
+          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
+      )
+```
+
+<!-- ## Bind together the summary stats for the variables not summarized for each MedStar ID -->
+
+```{r}
+#| echo: false
+lead_unsum_table <- purrr::map_dfr(
+  # This is where we can set the order of the rows
+  .x = c("panelist_discipline_5cat_f",  "healthcare_worker_2cat_f", "physical_abuse_2cat_f",  "sexual_abuse_2cat_f",  "emotional_psycho_abuse_2cat_f",  "neglect_2cat_f",  "self_neglect_2cat_f",  "financial_exploitation_2cat_f",  "abandonment_2cat_f",  "xc_assessment_screened_2cat_f"),
+  .f = ~ dplyr::bind_rows(lead_unsum_stats_list[[.x]])
+)
+```
+
+
+<!-- ## Bind together the summary stats for the variables summarized for each MedStar ID-->
+
+```{r}
+#| echo: false
+lead_sum_table <- purrr::map_dfr(
+  # This is where we can set the order of the rows
+  .x = c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det",  "physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any"),
+  .f = ~ dplyr::bind_rows(lead_sum_stats_list)
+)
+```
+<!-- Make a variable name key -->
+
+## Variable Name Key
+
+The following table provides a description for each variable that appears in the following tables of descriptive statistics.
+
+```{r}
+#| label: lead-panel-data-variable-name-key
+#| echo: false
+
+key <- tribble(
+ ~var, ~description,
+ "panelist_discipline_5cat_f", "LEAD panelist professional discipline.",
+ "healthcare_worker_2cat_f", "LEAD panelist's professional discipline healthcare worker categorization.",
+ "physical_abuse_2cat_f", "LEAD panel physical abuse vote.",
+ "sexual_abuse_2cat_f", "LEAD panel sexual abuse vote.",
+ "emotional_psycho_abuse_2cat_f", "LEAD panel emotional/ psychological abuse vote.",
+ "neglect_2cat_f", "LEAD panel neglect vote.",
+ "self_neglect_2cat_f", "LEAD panel self-neglect vote.",
+ "financial_exploitation_2cat_f", "LEAD panel financial exploitation vote.",
+ "abandonment_2cat_f", "LEAD panel abandonment vote.",
+ "xc_assessment_screened_2cat_f", "Abuse assessment screening determination.",
+ "physical_abuse_det", "Physical abuse final LEAD Assessment determination based on majority vote..",
+ "sexual_abuse_det", "Sexual abuse final LEAD Assessment determination based on majority vote",
+ "emotional_psycho_abuse_det", "Physical abuse final LEAD Assessment determination based on majority vote.",
+ "neglect_det", "Neglect final LEAD Assessment determination based on majority vote.",
+ "self_neglect_det", "Self-neglect final LEAD Assessment determination based on majority vote.",
+ "financial_exploitation_det", "Financial expoitation final LEAD Assessment determination based on majority vote.",
+ "abandonment_det", "Abandonment final LEAD Assessment determination based on majority vote.",
+ "physical_abuse_any", "At least one LEAD panelist voted for physical abuse.",
+ "sexual_abuse_any", "At least one LEAD panelist voted for sexual abuse.",
+ "emotional_psycho_abuse_any", "At least one LEAD panelist voted for emotional/ psychological abuse.",
+ "neglect_any", "At least one LEAD panelist voted for neglect.",
+ "self_neglect_any", "At least one LEAD panelist voted for self-neglect.",
+ "financial_exploitation_any", "At least one LEAD panelist voted for financial exploitation",
+ "abandonment_any", "At least one LEAD panelist voted for abandonment."
+)
+
+DT::datatable(
+  key,
+  colnames = c("Variable Name", "Variable Description")
+)
+```
+
+## Statistics Not Summarized by MedStar ID
+
+```{r}
+#| echo: false
+
+# Add a column that we can use to shade every other var name.
+lead_unsum_table <- add_shade_column(lead_unsum_table, var)
+
+
+DT::datatable(
+  lead_unsum_table,
+  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
+  escape = FALSE, # So the HTML superscript in the column header will work
+  options = list(
+    pageLength = 20,
+    columnDefs = list(
+      # Center n and formatted stats
+      list(className = 'dt-center', targets = 4:5),
+      # Hide row numbers column from view
+      list(targets = 0, visible = FALSE),
+      # Hide "shade" column from view
+      list(targets = 1, visible = FALSE)
+    )
+  )
+) |> 
+  DT::formatStyle(
+    "shade",
+    target = "row",
+    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
+  )
+```
+
+## Statistics Summarized by MedStar ID
+
+```{r}
+#| echo: false
+
+# Add a column that we can use to shade every other var name.
+lead_sum_table <- add_shade_column(lead_sum_table, var)
+
+
+DT::datatable(
+  lead_sum_table,
+  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
+  escape = FALSE, # So the HTML superscript in the column header will work
+  options = list(
+    pageLength = 20,
+    columnDefs = list(
+      # Center n and formatted stats
+      list(className = 'dt-center', targets = 4:5),
+      # Hide row numbers column from view
+      list(targets = 0, visible = FALSE),
+      # Hide "shade" column from view
+      list(targets = 1, visible = FALSE)
+    )
+  )
+) |> 
+  DT::formatStyle(
+    "shade",
+    target = "row",
+    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
+  )
+```
+
+# 🔴 Testing out downloading
+
+Example from the [downloadthis website](https://fmmattioni.github.io/downloadthis/index.html). This works, but Excel isn't the most user-friendly format. 
+
+Turn `lead_unsum_table` and `lead_sum_table` into a combined flextable object.
+
+```{r}
+# Convert tables to flextable
+lead_unsum_table <- as_flextable(lead_unsum_table)
+lead_sum_table <- as_flextable(lead_sum_table)
+
+#  Create an empty Word document
+lead_doc <- read_docx()
+
+# Add tables to Word document
+lead_doc <- lead_doc %>% 
+  body_add_flextable(lead_unsum_table, align = "left") %>%
+  body_add_par(value = "") %>%
+  body_add_flextable(lead_sum_table, align = "left")
+  
+
+# print the word document
+print(lead_doc, target = "lead_overall.docx")
+```
+
+```{r}
+#| label: download_docx_example
+#| echo: false
+downloadthis::download_file(
+  path = "lead_overall.docx",
+  output_name = "LEAD Summarized",
+  button_label = "Download table",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save"
+)
+```
