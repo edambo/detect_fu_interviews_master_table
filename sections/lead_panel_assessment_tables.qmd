@@ -239,6 +239,57 @@ DT::datatable(
   )
 ```
 
+```{r}
+#| ehco: false
+#| label: create_and_format_flextables
+lead_unsum_table <- flextable(lead_unsum_table, 
+                  col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
+                               "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
+                               "formatted_stats_Post-detect assessment")) %>%
+  
+  # Alternatively shade each group
+  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
+  
+  # Rename columns
+  set_header_labels(
+    var = "Variable", 
+    cat = "Category", 
+    "n_Initial assessment" = "N Initial Assessment",
+    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "n_Secondary assessment" = "N Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
+    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+  ) %>%
+  
+  # Format width of table
+  width(width = 1)
+
+lead_sum_table   <- flextable(lead_sum_table,  
+                  col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
+                               "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
+                               "formatted_stats_Post-detect assessment")) %>%
+  
+  # Alternatively shade each group
+  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
+  
+  # Rename columns
+  set_header_labels(
+    var = "Variable", 
+    cat = "Category", 
+    "n_Initial assessment" = "N Initial Assessment",
+    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "n_Secondary assessment" = "N Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
+    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+  ) %>%
+  
+  # Format width of table
+  width(width = 1) 
+
+```
+
 # 🔴 Testing out downloading
 
 Example from the [downloadthis website](https://fmmattioni.github.io/downloadthis/index.html). This works, but Excel isn't the most user-friendly format. 
@@ -246,9 +297,8 @@ Example from the [downloadthis website](https://fmmattioni.github.io/downloadthi
 Turn `lead_unsum_table` and `lead_sum_table` into a combined flextable object.
 
 ```{r}
-# Convert tables to flextable
-lead_unsum_table <- as_flextable(lead_unsum_table)
-lead_sum_table <- as_flextable(lead_sum_table)
+#| echo: false
+
 
 #  Create an empty Word document
 lead_doc <- read_docx()
@@ -262,7 +312,10 @@ lead_doc <- lead_doc %>%
 
 # print the word document
 print(lead_doc, target = "lead_overall.docx")
+
 ```
+
+
 
 ```{r}
 #| label: download_docx_example
