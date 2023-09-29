@@ -246,11 +246,7 @@ lead_unsum_table <- flextable(lead_unsum_table,
                                "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
                                "formatted_stats_Post-detect assessment")) %>%
   # Set caption
-<<<<<<< HEAD
-  set_caption("Summary statistics for the abuse votes by each LEAD panelists (not summarized for each MedStar ID)") %>%
-=======
   set_caption(lead_unsum_table, "Summary statistics for the abuse votes by each LEAD panelists (not summarized for each MedStar ID)") %>%
->>>>>>> main
   
   # Alternatively shade each group
   bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
@@ -278,11 +274,8 @@ lead_sum_table   <- flextable(lead_sum_table,
                                "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
                                "formatted_stats_Post-detect assessment")) %>%
   # Set caption
-<<<<<<< HEAD
   set_caption("Summary statistics for the abuse determinations for each MedStar ID grouped by assessment type") %>%
-=======
-  set_caption(lead_sum_table, "Summary statistics for the abuse determinations for each MedStar ID grouped by assessment type") %>%
->>>>>>> main
+
   
   # Alternatively shade each group
   bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
