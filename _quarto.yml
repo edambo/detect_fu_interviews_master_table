@@ -68,4 +68,7 @@ book:
     - part: "Interviewer Observations"
     
     - part: "LEAD Panel Assessment"
+      chapters:
+        - sections/lead_panel_assessment_tables.qmd
+      
 
