@@ -8,22 +8,40 @@ This page contains tables that summarize the LEAD Assessment Panel Data. The fir
 
 
 ```{r}
-#| label: lead-panel-data-setup
-#| echo: false
+#| include: false
 library(dplyr, warn.conflicts = FALSE)
 library(haven)
 library(freqtables)
 library(flextable)
 library(officer)
+library(table1)
+library(tibble)
+library(officer)
+library(tidyverse)
+library(readr)
+library(purrr)
+library(stringr)
+library(lubridate)
+
 
 # Import function that will be used to add shade to the table by variable name
 source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
-lead_panelists_votes      <- readRDS("../data/lead_panel_assessment_import_derived/lead_panelists_votes.rds") 
-lead_panel_vote_summaries <- readRDS("../data/lead_panel_assessment_import_derived/lead_panel_vote_summaries.rds") 
+lpa <- readRDS("../data/cleaned_rds_files/lead_panel_assessment_import.rds")
 
 # Import functions that will be used to calculate statistics
+
+# Functions specific to LEAD Panel Assessment Data
+source("../R/fix_lead_data_error.R")
+source("../R/lead_positive_votes_analysis.R")
+
+# Generate unique person datasets and summary table
+source("../R/unique_case_count.R")
+
+# Generate dissenting votes by panelist discipline summary table
+source("../R/vote_agreement.R")
+
 # Overall - Continuous columns
 source("../R/n_mean_ci.R")
 source("../R/n_median_ci.R")
@@ -42,91 +60,79 @@ source("../R/n_percent_ci_grouped.R")
 ```
 <!-- # Analysis -->
 
-<!-- ## Add factor labels to certain columns --> 
+```{r}
+#| echo: false
+# remove rows with extra panelist votes
+lpac <- error_fix(lpa)
+```
+
+## Summary of Unique Medstar IDs for the LEAD Assessment Data
 
 ```{r}
 #| echo: false
-lead_panelists_votes <- lead_panelists_votes %>%
-  mutate(
-    across(
-      .cols = c(healthcare_worker_2cat_f, physical_abuse_2cat_f : abandonment_2cat_f, xc_assessment_screened_2cat_f),
-      .fns  = ~factor(.x, levels = c("0", "1"),
-                      labels = c("No", "Yes")
-                     ),
-      .names = "{col}"
+unique_case_table <- unique_case(lpac, medstar_id, assessment_type_3cat_f)
+```
+
+```{r}
+#| echo: false
+# Add a column that we can use to shade every other var name.
+unique_case_dt_table <- add_shade_column(unique_case_table, assessment_type_3cat_f)
+
+# Create a DT datatable
+DT::datatable(
+  unique_case_dt_table,
+  colnames = c("shade", "Assessment", "Unique ID Count", "Unique ID Proportion of Total", "Assessment"),
+  escape = FALSE, # So the HTML superscript in the column header will work
+  options = list(
+    pageLength = 20,
+    columnDefs = list(
+      # Center stats
+      list(className = 'dt-center', targets = 3:4),
+      # Hide row numbers column from view
+      list(targets = 0, visible = FALSE),
+      # Hide "shade" column from view
+      list(targets = 1, visible = FALSE),
+      # Hide additional "var" column from view
+      list(targets = 5, visible = FALSE)
     )
   )
-```
+) |> 
+  DT::formatStyle(
+    "shade",
+    target = "row",
+    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
+  )
 
-
-<!-- ## Create lists of columns to analyze -->
-
-```{r}
-#| label: lead-panelists-votes-cols
-#| echo: false
-
-# These columns contain non-manipulated columns from the LEAD panel assessment
-lead_panelists_votes_cols <- c("panelist_discipline_5cat_f",  "healthcare_worker_2cat_f",  "physical_abuse_2cat_f",  "sexual_abuse_2cat_f",  "emotional_psycho_abuse_2cat_f",  "neglect_2cat_f",  "self_neglect_2cat_f",  "financial_exploitation_2cat_f",  "abandonment_2cat_f",  "xc_assessment_screened_2cat_f")
 ```
 
 ```{r}
-#| label: lead-panel-vote-summaries-cols
 #| echo: false
 
-# These columns contain calculated summary columns from the LEAD panel assessment for each unique MedStar ID
-lead_panel_vote_summaries_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det",  "physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any")
-```
+# Create and format a flextable that can be downloaded in a Word document
 
-<!-- ## Create a data frame that contains summary statistics for the abuse votes by each of the LEAD panelists (not summarized for each MedStar ID)  grouped by assessment type -->
-
-```{r}
-#| label: lead-unsum-stats_list
-#| echo: false
-lead_unsum_stats_list <- lead_panelists_votes_cols  |> 
-  rlang::set_names(lead_panelists_votes_cols) |> 
-  purrr::map(
-      ~ lead_panelists_votes |> 
-          filter(!is.na(assessment_type_3cat_f)) |> 
-          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
-      )
-```
-
-<!-- ## Create a data frame that contains summary statistics for the abuse determinations for each MedStar ID grouped by assessment type -->
-
-```{r}
-#| label: lead-sum-stats-list
-#| echo: false
-lead_sum_stats_list <- lead_panel_vote_summaries_cols |>
-    rlang::set_names(lead_panel_vote_summaries_cols) |> 
-    purrr::map(
-      ~ lead_panel_vote_summaries |> 
-          filter(!is.na(assessment_type_3cat_f)) |> 
-          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
-      )
-```
-
-<!-- ## Bind together the summary stats for the variables not summarized for each MedStar ID -->
-
-```{r}
-#| echo: false
-lead_unsum_table <- purrr::map_dfr(
-  # This is where we can set the order of the rows
-  .x = c("panelist_discipline_5cat_f",  "healthcare_worker_2cat_f", "physical_abuse_2cat_f",  "sexual_abuse_2cat_f",  "emotional_psycho_abuse_2cat_f",  "neglect_2cat_f",  "self_neglect_2cat_f",  "financial_exploitation_2cat_f",  "abandonment_2cat_f",  "xc_assessment_screened_2cat_f"),
-  .f = ~ dplyr::bind_rows(lead_unsum_stats_list[[.x]])
-)
+unique_case_flex_table <- flextable(unique_case_table, 
+                                    col_keys = c("assessment_type_3cat_f", "unique_id_count", "unique_id_proportion")) %>% 
+                
+  # Set caption
+  set_caption("Summary of Unique Medstar IDs for the LEAD Assessment Data") %>%
+  
+  # Rename columns
+  set_header_labels(
+    assessment_type_3cat_f  = "Assessment",
+    unique_id_count         = "Unique ID Count", 
+    unique_id_proportion    = "Unique ID Proportion of Total"
+  ) %>%
+  
+  # Format width of table
+  width(width = 1.5) %>%
+  
+  # Center text
+  align(j = c(2,3),
+        align = "center", 
+        part = "all")
 ```
 
 
-<!-- ## Bind together the summary stats for the variables summarized for each MedStar ID-->
-
-```{r}
-#| echo: false
-lead_sum_table <- purrr::map_dfr(
-  # This is where we can set the order of the rows
-  .x = c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det",  "physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any"),
-  .f = ~ dplyr::bind_rows(lead_sum_stats_list)
-)
-```
 <!-- Make a variable name key -->
 
 ## Variable Name Key
@@ -134,23 +140,12 @@ lead_sum_table <- purrr::map_dfr(
 The following table provides a description for each variable that appears in the following tables of descriptive statistics.
 
 ```{r}
-#| label: lead-panel-data-variable-name-key
 #| echo: false
 
 key <- tribble(
  ~var, ~description,
- "panelist_discipline_5cat_f", "LEAD panelist professional discipline.",
- "healthcare_worker_2cat_f", "LEAD panelist's professional discipline healthcare worker categorization.",
- "physical_abuse_2cat_f", "LEAD panel physical abuse vote.",
- "sexual_abuse_2cat_f", "LEAD panel sexual abuse vote.",
- "emotional_psycho_abuse_2cat_f", "LEAD panel emotional/ psychological abuse vote.",
- "neglect_2cat_f", "LEAD panel neglect vote.",
- "self_neglect_2cat_f", "LEAD panel self-neglect vote.",
- "financial_exploitation_2cat_f", "LEAD panel financial exploitation vote.",
- "abandonment_2cat_f", "LEAD panel abandonment vote.",
- "xc_assessment_screened_2cat_f", "Abuse assessment screening determination.",
- "physical_abuse_det", "Physical abuse final LEAD Assessment determination based on majority vote..",
- "sexual_abuse_det", "Sexual abuse final LEAD Assessment determination based on majority vote",
+ "physical_abuse_det", "Physical abuse final LEAD Assessment determination based on majority vote.",
+ "sexual_abuse_det", "Sexual abuse final LEAD Assessment determination based on majority vote.",
  "emotional_psycho_abuse_det", "Physical abuse final LEAD Assessment determination based on majority vote.",
  "neglect_det", "Neglect final LEAD Assessment determination based on majority vote.",
  "self_neglect_det", "Self-neglect final LEAD Assessment determination based on majority vote.",
@@ -171,17 +166,59 @@ DT::datatable(
 )
 ```
 
-## Statistics Not Summarized by MedStar ID
+## Summary Statistics for LEAD Panel Assessment Positive Votes
+
+```{r}
+#| echo: false
+# Generate positive vote summary columns for each Medstar ID
+lead_pos_votes <- pos_votes(lpac)
+```
+
+###  Any positive determinations at each assessment (initial, secondary, and post-DETECT) for each subtype of abuse and any overall across all subtypes.
+
+<!-- ## Create list of columns to analyze -->
+
+```{r}
+#| echo: false
+any_pos_cols <- c("physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any", "abuse_any")
+```
+
+<!-- ## Create a data frame that contains summary statistics -->
+
+```{r}
+#| echo: false
+any_pos_stats_list <- any_pos_cols  |> 
+  rlang::set_names(any_pos_cols) |> 
+  purrr::map(
+      ~ lead_pos_votes |> 
+          filter(!is.na(assessment_type_3cat_f)) |> 
+          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
+      )
+```
+
+```{r}
+#| echo: false
+any_pos_table <- purrr::map_dfr(
+  # This is where we can set the order of the rows
+  .x = c("physical_abuse_any", "sexual_abuse_any", "emotional_psycho_abuse_any", "neglect_any", "self_neglect_any", "financial_exploitation_any",
+         "abandonment_any", "abuse_any"),
+  .f = ~ dplyr::bind_rows(any_pos_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+any_pos_table <- any_pos_table |> 
+  dplyr::select(var, cat, everything())
+```
 
 ```{r}
 #| echo: false
 
 # Add a column that we can use to shade every other var name.
-lead_unsum_table <- add_shade_column(lead_unsum_table, var)
+any_pos_dt_table <- add_shade_column(any_pos_table, var)
 
 
 DT::datatable(
-  lead_unsum_table,
+  any_pos_dt_table,
   colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
   escape = FALSE, # So the HTML superscript in the column header will work
   options = list(
@@ -203,78 +240,14 @@ DT::datatable(
   )
 ```
 
-## Statistics Summarized by MedStar ID
-
 ```{r}
 #| echo: false
 
-# Add a column that we can use to shade every other var name.
-lead_sum_table <- add_shade_column(lead_sum_table, var)
-
-
-DT::datatable(
-  lead_sum_table,
-  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
-  escape = FALSE, # So the HTML superscript in the column header will work
-  options = list(
-    pageLength = 20,
-    columnDefs = list(
-      # Center n and formatted stats
-      list(className = 'dt-center', targets = 4:5),
-      # Hide row numbers column from view
-      list(targets = 0, visible = FALSE),
-      # Hide "shade" column from view
-      list(targets = 1, visible = FALSE)
-    )
-  )
-) |> 
-  DT::formatStyle(
-    "shade",
-    target = "row",
-    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
-  )
-```
-
-```{r}
-#| echo: false
-
-# Create and format flextables that can be downloaded in Word documents
-## lead_unsum_table
-
-lead_unsum_table <- flextable(lead_unsum_table, 
-                  col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
-                               "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
-                               "formatted_stats_Post-detect assessment")) %>%
+# Create and format a flextable that can be downloaded in a Word document
+any_pos_flex_table   <- flextable(any_pos_dt_table,  
+                  col_keys = c('var', 'cat', 'n_Initial assessment', 'formatted_stats_Initial assessment', 'n_Secondary assessment', 'formatted_stats_Secondary assessment', 'n_Post-detect assessment', 'formatted_stats_Post-detect assessment')) %>%
   # Set caption
-  set_caption("Summary statistics for the abuse votes by each LEAD panelists (not summarized for each MedStar ID)") %>%
-  
-  # Alternatively shade each group
-  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
-  
-  # Rename columns
-  set_header_labels(
-    var = "Variable", 
-    cat = "Category", 
-    "n_Initial assessment" = "N Initial Assessment",
-    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
-    "n_Secondary assessment" = "N Secondary Assessment", 
-    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
-    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
-    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
-  ) %>%
-  
-  # Format width of table
-  width(width = 0.88)
-
-
-
-## lead_sum_table
-lead_sum_table   <- flextable(lead_sum_table,  
-                  col_keys = c("var", "cat", "n_Initial assessment", "formatted_stats_Initial assessment", 
-                               "n_Secondary assessment", "formatted_stats_Secondary assessment", "n_Post-detect assessment",
-                               "formatted_stats_Post-detect assessment")) %>%
-  # Set caption
-  set_caption("Summary statistics for the abuse determinations for each MedStar ID grouped by assessment type") %>%
+  set_caption("Any positive determinations at each assessment (initial, secondary, and post-DETECT) for each subtype of abuse and any overall across all subtypes.") %>%
 
   
   # Alternatively shade each group
@@ -294,15 +267,174 @@ lead_sum_table   <- flextable(lead_sum_table,
   
   # Format width of table
   width(width = 0.88) 
-
-lead_unsum_table
 ```
 
-# 🔴 Testing out downloading
+###  Final LEAD Assessment determination based on majority vote
+
+<!-- ## Create list of columns to analyze -->
+
+```{r}
+#| echo: false
+maj_det_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det")
+```
+
+<!-- ## Create a data frame that contains summary statistics -->
+
+```{r}
+#| echo: false
+maj_det_stats_list <- maj_det_cols  |> 
+  rlang::set_names(maj_det_cols) |> 
+  purrr::map(
+      ~ lead_pos_votes |> 
+          filter(!is.na(assessment_type_3cat_f)) |> 
+          n_percent_ci_grouped(!! rlang::sym(.x), assessment_type_3cat_f, 1)
+      )
+```
+
+```{r}
+#| echo: false
+maj_det_table <- purrr::map_dfr(
+  # This is where we can set the order of the rows
+  .x = c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det"),
+  .f = ~ dplyr::bind_rows(maj_det_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+maj_det_table <- maj_det_table |> 
+  dplyr::select(var, cat, everything())
+```
+
+```{r}
+#| echo: false
+
+# Add a column that we can use to shade every other var name.
+maj_det_dt_table <- add_shade_column(maj_det_table, var)
+
+
+DT::datatable(
+  maj_det_dt_table,
+  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
+  escape = FALSE, # So the HTML superscript in the column header will work
+  options = list(
+    pageLength = 20,
+    columnDefs = list(
+      # Center n and formatted stats
+      list(className = 'dt-center', targets = 4:5),
+      # Hide row numbers column from view
+      list(targets = 0, visible = FALSE),
+      # Hide "shade" column from view
+      list(targets = 1, visible = FALSE)
+    )
+  )
+) |> 
+  DT::formatStyle(
+    "shade",
+    target = "row",
+    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
+  )
+```
+
+```{r}
+#| echo: false
+
+# Create and format a flextable that can be downloaded in a Word document
+maj_det_flex_table   <- flextable(maj_det_dt_table,  
+                  col_keys = c('var', 'cat', 'n_Initial assessment', 'formatted_stats_Initial assessment', 'n_Secondary assessment', 'formatted_stats_Secondary assessment', 'n_Post-detect assessment', 'formatted_stats_Post-detect assessment')) %>%
+  # Set caption
+  set_caption("Any positive determinations at each assessment (initial, secondary, and post-DETECT) for each subtype of abuse and any overall across all subtypes.") %>%
+
+  
+  # Alternatively shade each group
+  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
+  
+  # Rename columns
+  set_header_labels(
+    var = "Variable", 
+    cat = "Category", 
+    "n_Initial assessment" = "N Initial Assessment",
+    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "n_Secondary assessment" = "N Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
+    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+  ) %>%
+  
+  # Format width of table
+  width(width = 0.88) 
+```
+## Count and Percentage of Dissenting Votes for Each Panelist Discipline 
+
+```{r}
+#| echo: false
+lpac_dis_votes_table <- panelist_vote_agreement(lpac)
+```
+
+```{r}
+#| echo: false
+
+# Add a column that we can use to shade every other var name.
+lpac_dis_votes_dt_table <- add_shade_column(lpac_dis_votes_table, abuse_type)
+
+DT::datatable(
+  lpac_dis_votes_dt_table,
+  colnames = c("Shade", "Panelist Discipline", "Abuse Type", "N Votes Initial Assessment", "N (%) Dissenting Votes Initial Assessment", "N Votes Secondary Assessment", "N (%) Dissenting Votes Secondary Assessment", "N Votes Post-DETECT assessment", "N (%) Dissenting Votes Post-DETECT Assessment",
+               "var"
+),
+  escape = FALSE, # So the HTML superscript in the column header will work
+  options = list(
+    pageLength = 20,
+    columnDefs = list(
+      # Center n and formatted stats
+      list(className = 'dt-center', targets = 4:8),
+      # Hide row numbers column from view
+      list(targets = 0, visible = FALSE),
+      # Hide "shade" column from view
+      list(targets = 1, visible = FALSE),
+      # Hide additional "var" column from view
+      list(targets = 10, visible = FALSE)
+    )
+  )
+) |> 
+  DT::formatStyle(
+    "shade",
+    target = "row",
+    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
+  )
+```
+
+```{r}
+#| echo: false
+
+# Create and format a flextable that can be downloaded in a Word document
+lpac_dis_votes_flex_table   <- flextable(lpac_dis_votes_dt_table,  
+                  col_keys = c('panelist_discipline_5cat_f', 'abuse_type', 'n_votes_Initial assessment', 'n_perc_diss_votes_Initial assessment', 'n_votes_Secondary assessment', 'n_perc_diss_votes_Secondary assessment', 'n_votes_Post-detect assessment', 'n_perc_diss_votes_Post-detect assessment')) %>%
+  # Set caption
+  set_caption("Count and Percentage of Dissenting Votes for Each Panelist Discipline") %>%
+
+  
+  # Alternatively shade each group
+  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
+  
+  # Rename columns
+  set_header_labels(
+    var = "Variable", 
+    cat = "Category", 
+    "n_Initial assessment" = "N Initial Assessment",
+    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "n_Secondary assessment" = "N Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
+    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+  ) %>%
+  
+  # Format width of table
+  width(width = 0.2) 
+```
+
+
+## 🔴 Testing out downloading
 
 Example from the [downloadthis website](https://fmmattioni.github.io/downloadthis/index.html). This works, but Excel isn't the most user-friendly format. 
-
-Turn `lead_unsum_table` and `lead_sum_table` into a combined flextable object.
 
 ```{r}
 #| echo: false
@@ -313,9 +445,13 @@ lead_doc <- read_docx()
 
 # Add tables to Word document
 lead_doc <- lead_doc %>% 
-  body_add_flextable(lead_unsum_table, align = "left") %>%
+  body_add_flextable(unique_case_flex_table, align = "left") %>%
   body_add_par(value = "") %>%
-  body_add_flextable(lead_sum_table, align = "left")
+  body_add_flextable(any_pos_flex_table, align = "left") %>%
+  body_add_par(value = "") %>%
+  body_add_flextable(maj_det_flex_table, align = "left") %>%
+  body_add_par(value = "") %>%
+  body_add_flextable(lpac_dis_votes_flex_table, align = "left") %>%
   
 
 # print the word document

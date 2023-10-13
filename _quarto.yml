@@ -56,6 +56,8 @@ book:
         - sections/recruitment_scheduling.qmd
       
     - part: "Sociodemographic Information"
+      chapters: 
+        - sections/sociodemographic_tables.qmd
         
     - part: "General Health"
         
