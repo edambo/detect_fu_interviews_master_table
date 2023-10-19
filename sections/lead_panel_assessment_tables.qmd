@@ -428,7 +428,7 @@ lpac_dis_votes_flex_table   <- flextable(lpac_dis_votes_dt_table,
   ) %>%
   
   # Format width of table
-  width(width = 0.2) 
+  width(width = 0.88) 
 ```
 
 

@@ -53,7 +53,7 @@
     "href": "sections/sociodemographic_tables.html#testing-out-downloading",
     "title": "4  Sociodemographic Information",
     "section": "4.4 🔴 Testing out downloading",
-    "text": "4.4 🔴 Testing out downloading\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\nTurn the socio_demo_table into a downloadable flextable object in a Word.\n\n\n\n\n Download table"
+    "text": "4.4 🔴 Testing out downloading\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\nTurn the socio_demo_table into a downloadable flextable object in a Word document.\n\n\n\n\n Download table"
   },
   {
     "objectID": "sections/lead_panel_assessment_tables.html#summary-of-unique-medstar-ids-for-the-lead-assessment-data",

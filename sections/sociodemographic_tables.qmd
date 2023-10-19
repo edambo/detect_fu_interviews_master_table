@@ -285,7 +285,7 @@ socio_demo_flex <- flextable(socio_demo_table,
   )%>%
   
   # Format width of table
-  width(width = 2)
+  width(width = 1.7)
 
 
 ```
@@ -294,7 +294,7 @@ socio_demo_flex <- flextable(socio_demo_table,
 
 Example from the [downloadthis website](https://fmmattioni.github.io/downloadthis/index.html). This works, but Excel isn't the most user-friendly format. 
 
-Turn the `socio_demo_table` into a downloadable flextable object in a Word.
+Turn the `socio_demo_table` into a downloadable flextable object in a Word document.
 
 ```{r}
 #| echo: false
