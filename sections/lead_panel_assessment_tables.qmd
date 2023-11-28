@@ -28,12 +28,11 @@ library(lubridate)
 source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
-lpa <- readRDS("../data/cleaned_rds_files/lead_panel_assessment_import.rds")
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
 
 # Import functions that will be used to calculate statistics
 
-# Functions specific to LEAD Panel Assessment Data
-source("../R/fix_lead_data_error.R")
+# Function specific to LEAD Panel Assessment Data
 source("../R/lead_positive_votes_analysis.R")
 
 # Generate unique person datasets and summary table
@@ -41,6 +40,9 @@ source("../R/unique_case_count.R")
 
 # Generate dissenting votes by panelist discipline summary table
 source("../R/vote_agreement.R")
+
+# Filter out the lead panel df from the merged df
+source("../R/extract_df_from_merged_detect.R")
 
 # Overall - Continuous columns
 source("../R/n_mean_ci.R")
@@ -62,8 +64,8 @@ source("../R/n_percent_ci_grouped.R")
 
 ```{r}
 #| echo: false
-# remove rows with extra panelist votes
-lpac <- error_fix(lpa)
+# lead Panel data with rows with extra panelist votes omitted
+lpac <- filter_merged_df(detect_fu_merge, "_lpc")
 ```
 
 ## Summary of Unique Medstar IDs for the LEAD Assessment Data
@@ -219,7 +221,7 @@ any_pos_dt_table <- add_shade_column(any_pos_table, var)
 
 DT::datatable(
   any_pos_dt_table,
-  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
+  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Percentage (95% CI) Initial Assessment", "N Secondary Assessment", "Percentage (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Percentage (95% CI) Post-DETECT Assessment"),
   escape = FALSE, # So the HTML superscript in the column header will work
   options = list(
     pageLength = 20,
@@ -258,11 +260,11 @@ any_pos_flex_table   <- flextable(any_pos_dt_table,
     var = "Variable", 
     cat = "Category", 
     "n_Initial assessment" = "N Initial Assessment",
-    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "formatted_stats_Initial assessment" = "Percentage (95% CI) Initial Assessment", 
     "n_Secondary assessment" = "N Secondary Assessment", 
-    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Percentage (95% CI) Secondary Assessment", 
     "n_Post-detect assessment" = "N Post-DETECT Assessment", 
-    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+    "formatted_stats_Post-detect assessment" = "Percentage (95% CI) Post-DETECT Assessment"
   ) %>%
   
   # Format width of table
@@ -313,7 +315,7 @@ maj_det_dt_table <- add_shade_column(maj_det_table, var)
 
 DT::datatable(
   maj_det_dt_table,
-  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Statistic (95% CI) Initial Assessment", "N Secondary Assessment", "Statistic (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Statistic (95% CI) Post-DETECT Assessment"),
+  colnames = c("Shade", "Variable", "Category", "N Initial Assessment", "Percentage (95% CI) Initial Assessment", "N Secondary Assessment", "Percentage (95% CI) Secondary Assessment", "N Post-DETECT Assessment", "Percentage (95% CI) Post-DETECT Assessment"),
   escape = FALSE, # So the HTML superscript in the column header will work
   options = list(
     pageLength = 20,
@@ -333,7 +335,6 @@ DT::datatable(
     backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
   )
 ```
-
 ```{r}
 #| echo: false
 
@@ -352,11 +353,11 @@ maj_det_flex_table   <- flextable(maj_det_dt_table,
     var = "Variable", 
     cat = "Category", 
     "n_Initial assessment" = "N Initial Assessment",
-    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
+    "formatted_stats_Initial assessment" = "Percentage (95% CI) Initial Assessment", 
     "n_Secondary assessment" = "N Secondary Assessment", 
-    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
+    "formatted_stats_Secondary assessment" = "Percentage (95% CI) Secondary Assessment", 
     "n_Post-detect assessment" = "N Post-DETECT Assessment", 
-    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+    "formatted_stats_Post-detect assessment" = "Percentage (95% CI) Post-DETECT Assessment"
   ) %>%
   
   # Format width of table

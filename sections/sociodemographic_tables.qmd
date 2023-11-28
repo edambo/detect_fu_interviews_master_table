@@ -21,8 +21,7 @@ library(officer)
 source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
-soc_dem  <- readRDS("../data/cleaned_rds_files/sociodemographic_information_import.rds")
-participant <- readRDS("../data/cleaned_rds_files/participant_import.rds")
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
@@ -41,6 +40,9 @@ source("../R/cont_stats_grouped.R")
 # By group - Categorical columns
 source("../R/n_percent_ci_grouped.R")
 
+# Import function that will filter out the sociodemographic information df from the merged df
+source("../R/extract_df_from_merged_detect.R")
+
 # Import function that will create summary data sets of unique people and create a data set with only the first visit for each unique person
 source("../R/unique_people.R")
 ```
@@ -52,7 +54,9 @@ source("../R/unique_people.R")
 ```{r}
 #| echo: false
 
-socio_demo_unique_list <- unique_people(soc_dem)
+socio_demo_filter <- filter_merged_df(detect_fu_merge, "_soc")
+
+socio_demo_unique_list <- unique_people(socio_demo_filter)
 
 socio_demo <- socio_demo_unique_list$df_first_visit_only
 
@@ -242,7 +246,7 @@ socio_demo_table <- add_shade_column(socio_demo_table)
 
 DT::datatable(
   socio_demo_table,
-  colnames = c("Shade", "Variable", "Category", "N", "Statistic (95% CI)"),
+  colnames = c("Shade", "Variable", "Category", "N", "Statistic* (95% CI)"),
   escape = FALSE, # So the HTML superscript in the column header will work
   options = list(
     pageLength = 20,
@@ -262,6 +266,7 @@ DT::datatable(
     backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
   )
 ```
+___NOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables___
 
 ```{r}
 #| echo: false
@@ -281,13 +286,22 @@ socio_demo_flex <- flextable(socio_demo_table,
     var = "Variable", 
     cat = "Category", 
     "n" = "N",
-    "formatted_stats" = "Statistic (95% CI)"
+    "formatted_stats" = "Statistic* (95% CI)"
   )%>%
+  
+  # Add footnote
+  footnote(
+  i = 1, 
+  j = ~ formatted_stats,
+  value = as_paragraph(
+    c("The statistic is the mean for numeric variables and the percent of N for categorical variables")
+  ),
+  ref_symbols = c("*"),
+  part = "header", inline = TRUE
+) %>%
   
   # Format width of table
   width(width = 1.7)
-
-
 ```
 
 ## 🔴 Testing out downloading
