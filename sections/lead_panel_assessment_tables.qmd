@@ -65,14 +65,14 @@ source("../R/n_percent_ci_grouped.R")
 ```{r}
 #| echo: false
 # lead Panel data with rows with extra panelist votes omitted
-lpac <- filter_merged_df(detect_fu_merge, "_lpc")
+lpa <- filter_merged_df(detect_fu_merge, "_lpa")
 ```
 
 ## Summary of Unique Medstar IDs for the LEAD Assessment Data
 
 ```{r}
 #| echo: false
-unique_case_table <- unique_case(lpac, medstar_id, assessment_type_3cat_f)
+unique_case_table <- unique_case(lpa, medstar_id, assessment_type_3cat_f)
 ```
 
 ```{r}
@@ -173,7 +173,7 @@ DT::datatable(
 ```{r}
 #| echo: false
 # Generate positive vote summary columns for each Medstar ID
-lead_pos_votes <- pos_votes(lpac)
+lead_pos_votes <- pos_votes(lpa)
 ```
 
 ###  Any positive determinations at each assessment (initial, secondary, and post-DETECT) for each subtype of abuse and any overall across all subtypes.
@@ -367,17 +367,17 @@ maj_det_flex_table   <- flextable(maj_det_dt_table,
 
 ```{r}
 #| echo: false
-lpac_dis_votes_table <- panelist_vote_agreement(lpac)
+lpa_dis_votes_table <- panelist_vote_agreement(lpa)
 ```
 
 ```{r}
 #| echo: false
 
 # Add a column that we can use to shade every other var name.
-lpac_dis_votes_dt_table <- add_shade_column(lpac_dis_votes_table, abuse_type)
+lpa_dis_votes_dt_table <- add_shade_column(lpa_dis_votes_table, abuse_type)
 
 DT::datatable(
-  lpac_dis_votes_dt_table,
+  lpa_dis_votes_dt_table,
   colnames = c("Shade", "Panelist Discipline", "Abuse Type", "N Votes Initial Assessment", "N (%) Dissenting Votes Initial Assessment", "N Votes Secondary Assessment", "N (%) Dissenting Votes Secondary Assessment", "N Votes Post-DETECT assessment", "N (%) Dissenting Votes Post-DETECT Assessment",
                "var"
 ),
@@ -407,7 +407,7 @@ DT::datatable(
 #| echo: false
 
 # Create and format a flextable that can be downloaded in a Word document
-lpac_dis_votes_flex_table   <- flextable(lpac_dis_votes_dt_table,  
+lpa_dis_votes_flex_table   <- flextable(lpa_dis_votes_dt_table,  
                   col_keys = c('panelist_discipline_5cat_f', 'abuse_type', 'n_votes_Initial assessment', 'n_perc_diss_votes_Initial assessment', 'n_votes_Secondary assessment', 'n_perc_diss_votes_Secondary assessment', 'n_votes_Post-detect assessment', 'n_perc_diss_votes_Post-detect assessment')) %>%
   # Set caption
   set_caption("Count and Percentage of Dissenting Votes for Each Panelist Discipline") %>%
@@ -420,12 +420,14 @@ lpac_dis_votes_flex_table   <- flextable(lpac_dis_votes_dt_table,
   set_header_labels(
     var = "Variable", 
     cat = "Category", 
-    "n_Initial assessment" = "N Initial Assessment",
-    "formatted_stats_Initial assessment" = "Statistic (95% CI) Initial Assessment", 
-    "n_Secondary assessment" = "N Secondary Assessment", 
-    "formatted_stats_Secondary assessment" = "Statistic (95% CI) Secondary Assessment", 
-    "n_Post-detect assessment" = "N Post-DETECT Assessment", 
-    "formatted_stats_Post-detect assessment" = "Statistic (95% CI) Post-DETECT Assessment"
+    "panelist_discipline_5cat_f" = "Panelist Discipline",
+    "abuse_type" = "Abuse Type",
+    "n_votes_Initial assessment" = "N Initial Assessment Votes",
+    "n_perc_diss_votes_Initial assessment" = "N (%) Dissenting Votes - Initial Assessment", 
+    "n_votes_Secondary assessment" = "N Secondary Assessment Votes", 
+    "n_perc_diss_votes_Secondary assessment" = "N (%) Dissenting Votes - Secondary Assessment", 
+    "n_votes_Post-detect assessment" = "N Post-DETECT Assessment Votes", 
+    "n_perc_diss_votes_Post-detect assessment" = "N (%) Dissenting Votes - Post-DETECT Assessment"
   ) %>%
   
   # Format width of table
@@ -452,7 +454,7 @@ lead_doc <- lead_doc %>%
   body_add_par(value = "") %>%
   body_add_flextable(maj_det_flex_table, align = "left") %>%
   body_add_par(value = "") %>%
-  body_add_flextable(lpac_dis_votes_flex_table, align = "left") %>%
+  body_add_flextable(lpa_dis_votes_flex_table, align = "left") %>%
   
 
 # print the word document

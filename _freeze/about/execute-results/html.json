@@ -1,5 +1,5 @@
 {
-  "hash": "075feb297b1bb40bb0467fde6077474e",
+  "hash": "c4623f2f5007ecd771dcb9efc93c7225",
   "result": {
     "markdown": "# About\n\nThis is all copied from the Link2Care master table repo. Figure out if we want to do something similar for this project too.\n\n\n::: {.cell}\n\n:::\n\n\n::: callout-warning\nThe information on this page is not likely to be useful to many users. Rather, this page is intended to assist with site maintenance.\n:::\n\n# Overview of the data\n\nThe data for these tables is currently housed at UTHealth-Houston on the [DETECT SharePoint site](https://uthtmc.sharepoint.com/sites/SPHDETECT-RPC/SitePages/Home.aspx). Contact Brad Cannell at [Michael.B.Cannell\\@uth.tmc.edu](mailto:Michael.B.Cannell@uth.tmc.edu) if you have questions about accessing the data.\n\nAdd some other stuff as it becomes relevant...\n\n# Administrative information about the data\n\nCurrently, the code in this section is copied directly from the Link2Care master table repo. We will need to update it later if we are going to use it for this project too.\n\n\n::: {.cell}\n\n:::\n\n\n# Codebook\n\nThe codebooks for the source data are available at: <https://github.com/brad-cannell/detect_fu_interviews_public/tree/main/codebooks>.\n\nWe may want to improve the links to the codebooks in the future.\n",
     "supporting": [
