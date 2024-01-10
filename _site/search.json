@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html",
+    "href": "sections/lead_panel_assessment_tables.html",
+    "title": "LEAD Panel Assessment",
+    "section": "",
+    "text": "This page contains tables that summarize the LEAD Assessment Panel Data. The first table summarizes the data without grouping the rows by MedStar ID while the second table provides a summary of abuse determination for each unique MedStar ID.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe following table provides a description for each variable that appears in the following tables of descriptive statistics.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\n\n\n\n Download table"
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#variable-name-key",
+    "href": "sections/lead_panel_assessment_tables.html#variable-name-key",
+    "title": "LEAD Panel Assessment",
+    "section": "",
+    "text": "The following table provides a description for each variable that appears in the following tables of descriptive statistics."
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#testing-out-downloading",
+    "href": "sections/lead_panel_assessment_tables.html#testing-out-downloading",
+    "title": "LEAD Panel Assessment",
+    "section": "",
+    "text": "Example from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\n\n\n\n Download table"
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html",
+    "href": "sections/sociodemographic_tables.html",
+    "title": "Sociodemographic Information",
+    "section": "",
+    "text": "This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants.\n\n\n\n\n\n\n\n\n\nThe following table provides a description for each variable that appears in the following tables of descriptive statistics.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables\n\n\n\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\nTurn the socio_demo_table into a downloadable flextable object in a Word document.\n\n\n\n Download table"
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#variable-name-key",
+    "href": "sections/sociodemographic_tables.html#variable-name-key",
+    "title": "Sociodemographic Information",
+    "section": "",
+    "text": "The following table provides a description for each variable that appears in the following tables of descriptive statistics."
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#overall-statistics-for-only-the-first-visit-for-each-person",
+    "href": "sections/sociodemographic_tables.html#overall-statistics-for-only-the-first-visit-for-each-person",
+    "title": "Sociodemographic Information",
+    "section": "",
+    "text": "NOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables"
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#testing-out-downloading",
+    "href": "sections/sociodemographic_tables.html#testing-out-downloading",
+    "title": "Sociodemographic Information",
+    "section": "",
+    "text": "Example from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\nTurn the socio_demo_table into a downloadable flextable object in a Word document.\n\n\n\n Download table"
+  },
+  {
+    "objectID": "sections/recruitment_scheduling.html",
+    "href": "sections/recruitment_scheduling.html",
+    "title": "Recruitment and Scheduling",
+    "section": "",
+    "text": "Recruitment and Scheduling\nThis page will contain tables for the recruitment and scheduling data. It is possible that we will break those tables up across multiple pages as well."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Overview",
+    "section": "",
+    "text": "This website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see the primary public repository at: https://github.com/brad-cannell/detect_fu_interviews_public.\nFor questions related to DETECT, please contact Dr. Brad Cannell at Michael.B.Cannell@uth.tmc.edu.\n\n\nEventually add a blurb that gives a little background about DETECT."
+  },
+  {
+    "objectID": "index.html#about-detect",
+    "href": "index.html#about-detect",
+    "title": "Overview",
+    "section": "",
+    "text": "Eventually add a blurb that gives a little background about DETECT."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About\nThis is all copied from the Link2Care master table repo. Figure out if we want to do something similar for this project too.\n\n\n\n\n\n\nWarning\n\n\n\nThe information on this page is not likely to be useful to many users. Rather, this page is intended to assist with site maintenance.\n\n\n\n\nOverview of the data\nThe data for these tables is currently housed at UTHealth-Houston on the DETECT SharePoint site. Contact Brad Cannell at Michael.B.Cannell@uth.tmc.edu if you have questions about accessing the data.\nAdd some other stuff as it becomes relevant…\n\n\nAdministrative information about the data\nCurrently, the code in this section is copied directly from the Link2Care master table repo. We will need to update it later if we are going to use it for this project too.\n\n\nCodebook\nThe codebooks for the source data are available at: https://github.com/brad-cannell/detect_fu_interviews_public/tree/main/codebooks.\nWe may want to improve the links to the codebooks in the future."
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "References"
+  }
+]

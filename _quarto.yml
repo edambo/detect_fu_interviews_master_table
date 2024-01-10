@@ -1,11 +1,5 @@
 project:
   type: website
-  render: 
-    - index.qmd
-    - about.qmd
-    - sections/recruitment_scheduling.qmd
-    - sections/sociodemographic_tables.qmd
-    - sections/sociodemographic_tables.qmd
 
 # Website options and formatting
 format:
