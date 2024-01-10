@@ -6,7 +6,6 @@ always_allow_html: yes
 
 This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants. 
 
-
 ```{r}
 #| label: sociodemographic-information-data-setup
 #| include: false
@@ -59,14 +58,13 @@ socio_demo_filter <- filter_merged_df(detect_fu_merge, "_soc")
 socio_demo_unique_list <- unique_people(socio_demo_filter)
 
 socio_demo <- socio_demo_unique_list$df_first_visit_only
-
 ```
-
 
 <!-- ## Calculated variables -->
 
 ```{r}
 #| echo: false
+
 socio_demo <- socio_demo |>
   mutate(
    sode_race_8cat = case_when(
@@ -108,6 +106,7 @@ socio_demo <- socio_demo |>
 ```{r}
 #| echo: false
 #| warning: false
+
 socio_demo <- socio_demo |>
   mutate(
     sode_people_cont = case_when(
@@ -139,6 +138,7 @@ socio_demo_cont_cols <- c("sode_age_years", "sode_people_cont")
 ```{r}
 #| label: socio-demo-add-cont-stats-list-overall
 #| echo: false
+
 socio_demo_stats_list <- socio_demo_cont_cols  |> 
   rlang::set_names(socio_demo_cont_cols) |> 
   purrr::map(~ n_mean_ci(socio_demo, !! rlang::sym(.x), 1))
@@ -147,6 +147,7 @@ socio_demo_stats_list <- socio_demo_cont_cols  |>
 ```{r}
 #| label: socio-demo-add-cat-stats-list-overall
 #| echo: false
+
 socio_demo_stats_list <- c(
   socio_demo_stats_list,
   socio_demo_cat_cols |>
@@ -160,8 +161,8 @@ socio_demo_stats_list <- c(
 ```{r}
 #| label: socio-demo-stats-list-to-df-overall
 #| echo: false
+
 socio_demo_table <- purrr::map_dfr(
-  
   # This is where we can set the order of the rows
   .x = c("sode_age_years", "sode_people_cont", "sode_race_8cat_f", "sode_race_eth_6cat_f", "sode_marital_8cat_f", "sogi_identity_5cat_f", "sogi_orientation_8cat_f", "sode_hispanic_4cat_f", "sode_school_9cat_f", "sode_employed_11cat_f", "sode_income_9cat_f", "sode_military_4cat_f", "sode_unwanted_4cat_f", "sode_sexual_4cat_f", "hsi_contact_4cat_f" ),
   .f = ~ dplyr::bind_rows(socio_demo_stats_list[[.x]])
@@ -266,6 +267,7 @@ DT::datatable(
     backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
   )
 ```
+
 ___NOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables___
 
 ```{r}
@@ -312,6 +314,7 @@ Turn the `socio_demo_table` into a downloadable flextable object in a Word docum
 
 ```{r}
 #| echo: false
+
 #  Create an empty Word document
 soc_doc <- read_docx()
 
@@ -321,12 +324,12 @@ soc_doc <- soc_doc %>%
 
 # print the word document
 print(soc_doc, target = "socio_demo_overall.docx")
-
 ```
 
 ```{r}
 #| label: download_docx_example
 #| echo: false
+
 downloadthis::download_file(
   path = "socio_demo_overall.docx",
   output_name = "Sociodemographic Information Summary",
