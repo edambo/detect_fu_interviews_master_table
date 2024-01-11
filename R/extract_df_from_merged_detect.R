@@ -4,7 +4,7 @@
 # - APS Investigations: "_aps" 
 # - Clutter scale: "_cls" 
 # - General health: "_glh" 
-# - LEAD Panel Assessment(without data error): "_lpc" 
+# - LEAD Panel Assessment(without data error): "_lpa" 
 # - Observational measures: "_obs" 
 # - Self report: "_sfr" 
 # - Sociodemographic information "_soc"
