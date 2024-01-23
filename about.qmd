@@ -1,5 +1,10 @@
 # About
 
+<!--
+2024-01-22, Brad:
+Ebie and I met this morning. We are planning to add a bunch of basic "About" information about DETECT to the homepage. We are leaving this separate "About" page for now, but I'm thinking we will end up dropping after we complete the homepage. It's possible that we will want a page about using this repository or the data tables (as opposed to "about DETECT" itself), but I think we will probably just use the repo's wiki for that.
+-->
+
 This is all copied from the Link2Care master table repo. Figure out if we want to do something similar for this project too.
 
 ```{r}

@@ -7,3 +7,6 @@ For questions related to DETECT, please contact Dr. Brad Cannell at [Michael.B.C
 ## About DETECT
 
 Eventually add a blurb that gives a little background about DETECT.
+
+<!-- We should probably add some important dates and other things that we may want to use in the methods section of papers that we write. -->
+
