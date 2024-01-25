@@ -1,12 +1,231 @@
 # Overview 
 
-This website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see the primary public repository at: <https://github.com/brad-cannell/detect_fu_interviews_public>.
+This website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see [the primary public repository](https://github.com/brad-cannell/detect_fu_interviews_public).
 
 For questions related to DETECT, please contact Dr. Brad Cannell at [Michael.B.Cannell\@uth.tmc.edu](mailto:Michael.B.Cannell@uth.tmc.edu).
 
+```{r}
+#| include: false
+library(ggplot2)
+library(scales)
+library(lubridate)
+library(readxl)
+library(dplyr)
+library(cowplot)
+```
 ## About DETECT
 
-Eventually add a blurb that gives a little background about DETECT.
+Each month, MedStar treats many older adults in their homes. While they are there, they are also supposed to screen for elder mistreatment (EM) using the [DETECT tool](https://docs.google.com/document/d/1pkvwWssmffgzB43SW6D2csvSYDysfcAxMTGCB1joVIc/edit?usp=sharing). Currently, approximately 1,600 of those screenings are being completed each month.
 
-<!-- We should probably add some important dates and other things that we may want to use in the methods section of papers that we write. -->
+Every two weeks, our call center received a list of patients that were screened with the DETECT tool during the previous two weeks. For example, on the 15th of March, they would receive a list of all the people who were treated by MedStar and screened with the DETECT tool between March 1 and March 14. The call center would then call every person on that list and attempt to schedule them for a follow-up interview. Our inital target was 70 of these interviews per month. In reality, we averaged around 30. Follow-up interviews were scheduled for people who passed the initial screening and agreed to participate.
+```{r}
+#| echo: false
+knitr::include_graphics("./about_section_graphics/DETECT_schematic.png")
+```
+A specially trained MedStar Community Paramedic traveled to patients' homes to conduct the follow-up interviews. They typically took between 1 and 2 hours. At the end of the interview, the participant received a $25 WalMart gift card. All data was collected and stored in FileMaker Pro.
+
+**DETECT Project Timeline**
+```{r}
+#| include: false
+# Load milestone data
+milestones <- readxl::read_excel("../detect_fu_interviews_master_table/about_section_graphics/DETECT_timeline.xlsx")
+```
+
+```{r}
+#| include: false
+# Create two date variables and order data set chronologically
+milestones <- milestones %>%
+  mutate(
+    date = make_date(year, month, day),
+    # Create date column with only year that will be used for plot
+    date_month = make_date(year, month, 1),
+    # Create a variable that combines the milestone event with the date on a new line
+    event_date = paste(milestone, as.character(date), sep= "\n ")
+  )%>%
+  arrange(date)
+```
+
+```{r}
+#| include: false
+split_yr <- split(milestones, milestones$year, drop = TRUE)
+names(split_yr) <- c("yr_2014", "yr_2019", "yr_2020", "yr_2021", "yr_2022")
+
+list2env(split_yr, envir=.GlobalEnv)
+```
+
+```{r}
+#| include: false
+line_pos <- function(yr_df) {
+  # Create a dataframe with the positions and direction of the timeline points 
+  positions <- c(0.5, -0.5, 1.0, -1.0, 1.5, -1.5)
+  directions <- c(1, -1)
+  
+  line_pos <- data.frame(
+      "date_month" = unique(yr_df$date_month),
+      "position"  = rep(positions, length.out = length(unique(yr_df$date_month))),
+      "direction" = rep(directions, length.out = length(unique(yr_df$date_month)))
+  )
+  # Merge the line position data frame with the milestones data frame
+  milestones_lines <- yr_df %>% left_join(line_pos, by = "date_month") %>%
+    # Create a text position column with an offset of 0.3
+    group_by(month) %>%
+    mutate(
+      month_order = row_number()
+    ) %>%
+    ungroup() %>%
+    mutate(
+      text_position = position + (0.25*direction*month_order)
+    )
+}
+```
+
+```{r}
+#| include: false
+  # Create month data frame
+month_axis <- function(yr_df) {
+  month_date_range <- seq(min(yr_df$date_month) - months(2), max(yr_df$date_month) + months(2), by='month')
+  month_format <- format(month_date_range, '%b')
+  month_df <- data.frame(month_date_range, month_format)
+}
+
+
+```
+
+```{r}
+#| include: false
+# Create a data frame with only the first event for each year that will be used to create the plot vertical segment lines
+plot_time_line <- function(yr_df, months_df){
+
+  
+  # Plot
+  ggplot(yr_df, 
+         aes(x = date_month, y = 0, 
+             col = date, 
+             label = event_date)) +
+               ylim(-1.8, 1.8) +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      # Change plot and panel background
+      plot.background = element_rect(fill = "white"),
+      panel.background = element_rect(fill = 'grey96')
+    )+
+    
+    # Plot horizontal black line for timeline
+    geom_hline(yintercept=0, color = "black", line_width = 0.3) + 
+    
+    # Plot vertical segment lines for milestones
+    geom_segment(data = yr_df, 
+                 aes(y = position, yend = 0, xend = date_month), 
+                 color='black', line_width = 0.2) +
+  
+    # Plot scatter points at zero and date
+    geom_point(data = yr_df, aes(y=0), line_width = 3) + 
+    
+    # Don't show axes or legend
+    theme(axis.line.y     = element_blank(),
+          axis.text.y     = element_blank(),
+          axis.title.x    = element_blank(),
+          axis.title.y    = element_blank(),
+          axis.ticks.y    = element_blank(),
+          axis.text.x     = element_blank(),
+          axis.ticks.x    = element_blank(),
+          axis.line.x     = element_blank(),
+          legend.position = "none"
+    ) + 
+    # Show month text
+    geom_text(data = months_df, aes(x = month_date_range,
+                                   y = -0.1,
+                                   label = month_format),
+              size = 3, 
+              vjust = 1, 
+              color='black', 
+              angle=90) + 
+    
+    # Show text for each milestone
+    geom_text(aes(y = text_position,label = event_date), 
+              size = 3) +
+   # Expand the graph so that all text are within the figure boundaries
+    scale_x_continuous(
+      expand = expansion(mult = 0.165)
+      )
+}
+  
+
+```
+
+```{r}
+#| include: false
+yr_2014 <- as.data.frame(yr_2014)
+yr_2014 <- line_pos(yr_2014)
+months_2014 <- month_axis(yr_2014)
+```
+
+```{r, fig.width = 8}
+#| echo: false
+#| warning: false
+
+plot_2014 <- plot_time_line(yr_2014, months_2014)
+```
+
+```{r}
+#| include: false
+yr_2019 <- as.data.frame(yr_2019)
+yr_2019 <- line_pos(yr_2019)
+months_2019 <- month_axis(yr_2019)
+```
+
+```{r, fig.width = 8}
+#| echo: false
+#| warning: false
+
+plot_2019 <- plot_time_line(yr_2019, months_2019)
+```
+
+```{r}
+#| include: false
+yr_2020 <- as.data.frame(yr_2020)
+yr_2020 <- line_pos(yr_2020)
+months_2020 <- month_axis(yr_2020)
+```
+
+```{r, fig.width = 8}
+#| echo: false
+#| warning: false
+
+plot_2020 <- plot_time_line(yr_2020, months_2020)
+```
+
+```{r}
+#| include: false
+yr_2021 <- as.data.frame(yr_2021)
+yr_2021 <- line_pos(yr_2021)
+months_2021 <- month_axis(yr_2021)
+```
+
+```{r, fig.width = 8}
+#| echo: false
+#| warning: false
+
+plot_2021 <- plot_time_line(yr_2021, months_2021)
+```
+
+```{r}
+#| include: false
+yr_2022 <- as.data.frame(yr_2022)
+yr_2022 <- line_pos(yr_2022)
+months_2022 <- month_axis(yr_2022)
+```
+
+```{r, fig.width = 8}
+#| echo: false
+#| warning: false
+
+plot_2022 <- plot_time_line(yr_2022, months_2022)
+```
+
+```{r, fig.height = 23.75, fig.width = 8.5}
+#| echo: false
+plot_grid(plot_2014, plot_2019, plot_2020, plot_2021, plot_2022, labels=c("2014", "2019", "2020", "2021", "2022"), ncol = 1, nrow = 5) 
+```
 

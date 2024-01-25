@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DETECT Follow-up Interviews Master Descriptive Tables",
+    "section": "",
+    "text": "1 Overview\nThis website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see the primary public repository at: https://github.com/brad-cannell/detect_fu_interviews_public.\nFor questions related to DETECT, please contact Dr. Brad Cannell at Michael.B.Cannell@uth.tmc.edu."
+  },
+  {
+    "objectID": "index.html#about-detect",
+    "href": "index.html#about-detect",
+    "title": "DETECT Follow-up Interviews Master Descriptive Tables",
+    "section": "1.1 About DETECT",
+    "text": "1.1 About DETECT\nEventually add a blurb that gives a little background about DETECT."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "2  About",
+    "section": "",
+    "text": "This is all copied from the Link2Care master table repo. Figure out if we want to do something similar for this project too.\n\n\n\n\n\n\nWarning\n\n\n\nThe information on this page is not likely to be useful to many users. Rather, this page is intended to assist with site maintenance.\n\n\n\n3 Overview of the data\nThe data for these tables is currently housed at UTHealth-Houston on the DETECT SharePoint site. Contact Brad Cannell at Michael.B.Cannell@uth.tmc.edu if you have questions about accessing the data.\nAdd some other stuff as it becomes relevant…\n\n\n4 Administrative information about the data\nCurrently, the code in this section is copied directly from the Link2Care master table repo. We will need to update it later if we are going to use it for this project too.\n\n\n5 Codebook\nThe codebooks for the source data are available at: https://github.com/brad-cannell/detect_fu_interviews_public/tree/main/codebooks.\nWe may want to improve the links to the codebooks in the future."
+  },
+  {
+    "objectID": "sections/recruitment_scheduling.html",
+    "href": "sections/recruitment_scheduling.html",
+    "title": "3  Recruitment and Scheduling",
+    "section": "",
+    "text": "This page will contain tables for the recruitment and scheduling data. It is possible that we will break those tables up across multiple pages as well."
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#variable-name-key",
+    "href": "sections/sociodemographic_tables.html#variable-name-key",
+    "title": "4  Sociodemographic Information",
+    "section": "4.1 Variable Name Key",
+    "text": "4.1 Variable Name Key\nThe following table provides a description for each variable that appears in the following tables of descriptive statistics."
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#unique-people-summary-table",
+    "href": "sections/sociodemographic_tables.html#unique-people-summary-table",
+    "title": "4  Sociodemographic Information",
+    "section": "4.2 Unique People Summary Table",
+    "text": "4.2 Unique People Summary Table"
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#overall-statistics-for-only-the-first-visit-for-each-person",
+    "href": "sections/sociodemographic_tables.html#overall-statistics-for-only-the-first-visit-for-each-person",
+    "title": "4  Sociodemographic Information",
+    "section": "4.3 Overall Statistics for Only the First Visit for Each Person",
+    "text": "4.3 Overall Statistics for Only the First Visit for Each Person\n\n\n\n\n\n\n\nNOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables"
+  },
+  {
+    "objectID": "sections/sociodemographic_tables.html#testing-out-downloading",
+    "href": "sections/sociodemographic_tables.html#testing-out-downloading",
+    "title": "4  Sociodemographic Information",
+    "section": "4.4 🔴 Testing out downloading",
+    "text": "4.4 🔴 Testing out downloading\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\nTurn the socio_demo_table into a downloadable flextable object in a Word document.\n\n\n\n\n Download table"
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#summary-of-unique-medstar-ids-for-the-lead-assessment-data",
+    "href": "sections/lead_panel_assessment_tables.html#summary-of-unique-medstar-ids-for-the-lead-assessment-data",
+    "title": "5  LEAD Panel Assessment",
+    "section": "5.1 Summary of Unique Medstar IDs for the LEAD Assessment Data",
+    "text": "5.1 Summary of Unique Medstar IDs for the LEAD Assessment Data"
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#variable-name-key",
+    "href": "sections/lead_panel_assessment_tables.html#variable-name-key",
+    "title": "5  LEAD Panel Assessment",
+    "section": "5.2 Variable Name Key",
+    "text": "5.2 Variable Name Key\nThe following table provides a description for each variable that appears in the following tables of descriptive statistics."
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#summary-statistics-for-lead-panel-assessment-positive-votes",
+    "href": "sections/lead_panel_assessment_tables.html#summary-statistics-for-lead-panel-assessment-positive-votes",
+    "title": "5  LEAD Panel Assessment",
+    "section": "5.3 Summary Statistics for LEAD Panel Assessment Positive Votes",
+    "text": "5.3 Summary Statistics for LEAD Panel Assessment Positive Votes\n\n5.3.1 Any positive determinations at each assessment (initial, secondary, and post-DETECT) for each subtype of abuse and any overall across all subtypes.\n\n\n\n\n\n\n\n\n\n\n\n5.3.2 Final LEAD Assessment determination based on majority vote"
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#count-and-percentage-of-dissenting-votes-for-each-panelist-discipline",
+    "href": "sections/lead_panel_assessment_tables.html#count-and-percentage-of-dissenting-votes-for-each-panelist-discipline",
+    "title": "5  LEAD Panel Assessment",
+    "section": "5.4 Count and Percentage of Dissenting Votes for Each Panelist Discipline",
+    "text": "5.4 Count and Percentage of Dissenting Votes for Each Panelist Discipline"
+  },
+  {
+    "objectID": "sections/lead_panel_assessment_tables.html#testing-out-downloading",
+    "href": "sections/lead_panel_assessment_tables.html#testing-out-downloading",
+    "title": "5  LEAD Panel Assessment",
+    "section": "5.5 🔴 Testing out downloading",
+    "text": "5.5 🔴 Testing out downloading\nExample from the downloadthis website. This works, but Excel isn’t the most user-friendly format.\n\n\n\n\n Download table"
+  }
+]
