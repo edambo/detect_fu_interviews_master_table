@@ -1,0 +1,16 @@
+{
+  "hash": "0c244a2169390f340478f9db09954439",
+  "result": {
+    "markdown": "# Overview \n\nThis website contains multiple web-based tables of baseline descriptive statistics for (nearly) every follow-up interview variable collected as part of the DETECT study between 2018 and 2024. For more information about the DETECT project, please see [the primary public repository](https://github.com/brad-cannell/detect_fu_interviews_public).\n\nFor questions related to DETECT, please contact Dr. Brad Cannell at [Michael.B.Cannell\\@uth.tmc.edu](mailto:Michael.B.Cannell@uth.tmc.edu).\n\n\n\n\n## About DETECT\n\nEach month, MedStar treats many older adults in their homes. While they are there, they are also supposed to screen for elder mistreatment (EM) using the [DETECT tool](https://docs.google.com/document/d/1pkvwWssmffgzB43SW6D2csvSYDysfcAxMTGCB1joVIc/edit?usp=sharing). Currently, approximately 1,600 of those screenings are being completed each month.\n\nEvery two weeks, our call center received a list of patients that were screened with the DETECT tool during the previous two weeks. For example, on the 15th of March, they would receive a list of all the people who were treated by MedStar and screened with the DETECT tool between March 1 and March 14. The call center would then call every person on that list and attempt to schedule them for a follow-up interview. Our inital target was 70 of these interviews per month. In reality, we averaged around 30. Follow-up interviews were scheduled for people who passed the initial screening and agreed to participate.\n\n::: {.cell}\n::: {.cell-output-display}\n![](./about_section_graphics/DETECT_schematic.png)\n:::\n:::\n\nA specially trained MedStar Community Paramedic traveled to patients' homes to conduct the follow-up interviews. They typically took between 1 and 2 hours. At the end of the interview, the participant received a $25 WalMart gift card. All data was collected and stored in FileMaker Pro.\n\n**DETECT Project Timeline**\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n::: {.cell}\n\n:::\n\n\n\n::: {.cell}\n\n:::\n\n\n\n::: {.cell}\n\n:::\n\n\n\n::: {.cell}\n\n:::\n\n\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-19-1.png){width=816}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
