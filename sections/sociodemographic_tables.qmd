@@ -4,7 +4,7 @@ always_allow_html: yes
 
 # Sociodemographic Information
 
-This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants. 
+This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants.
 
 ```{r}
 #| label: sociodemographic-information-data-setup
@@ -15,12 +15,16 @@ library(haven)
 library(freqtables)
 library(flextable)
 library(officer)
+library(knitr)
 
 # Import function that will be used to add shade to the table by variable name
 source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
 detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+
+# Import dataframe containing description of variables
+soc_dem_desc <- readRDS("../sections/variable_descriptions/sociodemographic_information_var_desc.rds")
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
@@ -46,8 +50,6 @@ source("../R/extract_df_from_merged_detect.R")
 source("../R/unique_people.R")
 ```
 
-<!-- # Analysis -->
-
 <!-- ## Create a data set with only the first visit for each unique person -->
 
 ```{r}
@@ -60,70 +62,13 @@ socio_demo_unique_list <- unique_people(socio_demo_filter)
 socio_demo <- socio_demo_unique_list$df_first_visit_only
 ```
 
-<!-- ## Calculated variables -->
-
-```{r}
-#| echo: false
-
-socio_demo <- socio_demo |>
-  mutate(
-   sode_race_8cat = case_when(
-      is.na(sode_race)                                         ~ NA_integer_,
-      sode_race == "American Indian or Alaskan Native"         ~ 1,
-      sode_race == "Asian"                                     ~ 2,
-      sode_race == "Black or African American"                 ~ 3,
-      sode_race == "Native Hawaiian or Other Pacific Islander" ~ 4,
-      sode_race == "White"                                     ~ 5,
-      sode_race == "Don't know"                                ~ 7, 
-      sode_race == "Refused"                                   ~ 8,  
-      TRUE                                                     ~ 6  # "Other race or multiple races",
-                                  
-      
-    ),
-   sode_race_8cat_f = factor(
-     sode_race_8cat, 
-     levels = c(1,2,3,4,5,6, 7, 8),
-     labels = c("American Indian or Alaskan Native","Asian", "Black or African American", "Native Hawaiian or Other Pacific Islander",
-                "White", "Other race or multiple races", "Don't know", "Refused")
-   ),
-   sode_race_eth_6cat = case_when(
-      is.na(sode_hispanic_4cat_f)                              ~ NA_integer_,
-      sode_hispanic_4cat_f == "Yes"                            ~ 1, # "Hispanic, any race"
-      sode_race == "Black or African American"                 ~ 2, # "Black, non-Hispanic"
-      sode_race == "White"                                     ~ 3, # "White, non-Hispanic"
-      sode_hispanic_4cat_f == "Don't know"                     ~ 5, 
-      sode_hispanic_4cat_f == "Refused"                        ~ 6,                     
-      TRUE                                                     ~ 4, # "Other race or multiple races, non-Hispanic"
-    ),
-   sode_race_eth_6cat_f = factor(
-     sode_race_eth_6cat, 
-     levels = c(1,2,3,4,5,6),
-     labels = c("Hispanic, any race", "Black, non-Hispanic", "White, non-Hispanic", "Other race or multiple races, non-Hispanic", "Don't know", "Refused")
-     ) 
-   )
-```
-
-```{r}
-#| echo: false
-#| warning: false
-
-socio_demo <- socio_demo |>
-  mutate(
-    sode_people_cont = case_when(
-      sode_people == "Don't know"
-      | is.na(sode_people)        ~ NA_integer_,
-      TRUE                        ~ as.numeric(sode_people)
-    )
-  )
-```
-
 <!-- ## Create lists of columns to analyze -->
 
 ```{r}
 #| label: socio-demo-define-cat-cols
 #| echo: false
 
-socio_demo_cat_cols <- c("sode_race_8cat_f", "sode_race_eth_6cat_f", "sode_marital_8cat_f", "sogi_identity_5cat_f", "sogi_orientation_8cat_f", "sode_hispanic_4cat_f", "sode_school_9cat_f", "sode_employed_11cat_f", "sode_income_9cat_f", "sode_military_4cat_f", "sode_unwanted_4cat_f", "sode_sexual_4cat_f", "hsi_contact_4cat_f")
+socio_demo_cat_cols <- socio_demo %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
 ```
 
 ```{r}
@@ -133,210 +78,232 @@ socio_demo_cat_cols <- c("sode_race_8cat_f", "sode_race_eth_6cat_f", "sode_marit
 socio_demo_cont_cols <- c("sode_age_years", "sode_people_cont")
 ```
 
-<!-- ## Create a data frame that contains overall summary statistics -->
+<!-- ## Create data frames that contains overall summary statistics for categorical and continuous data -->
+
+<!-- ### Continuous data -->
 
 ```{r}
-#| label: socio-demo-add-cont-stats-list-overall
+#| label: socio-demo-add-cont-stats-list
 #| echo: false
 
-socio_demo_stats_list <- socio_demo_cont_cols  |> 
+socio_demo_cont_stats_list <- socio_demo_cont_cols  |> 
   rlang::set_names(socio_demo_cont_cols) |> 
   purrr::map(~ n_mean_ci(socio_demo, !! rlang::sym(.x), 1))
 ```
 
 ```{r}
-#| label: socio-demo-add-cat-stats-list-overall
+#| label: socio-demo-cont-stats-list-to-df
 #| echo: false
 
-socio_demo_stats_list <- c(
-  socio_demo_stats_list,
-  socio_demo_cat_cols |>
-    rlang::set_names(socio_demo_cat_cols) |> 
-    purrr::map(~ n_percent_ci(socio_demo, !! rlang::sym(.x), 1))
-)
-```
-
-<!-- ## Bind together the continuous and categorical summary stats -->
-
-```{r}
-#| label: socio-demo-stats-list-to-df-overall
-#| echo: false
-
-socio_demo_table <- purrr::map_dfr(
+socio_demo_cont_table <- purrr::map_dfr(
   # This is where we can set the order of the rows
-  .x = c("sode_age_years", "sode_people_cont", "sode_race_8cat_f", "sode_race_eth_6cat_f", "sode_marital_8cat_f", "sogi_identity_5cat_f", "sogi_orientation_8cat_f", "sode_hispanic_4cat_f", "sode_school_9cat_f", "sode_employed_11cat_f", "sode_income_9cat_f", "sode_military_4cat_f", "sode_unwanted_4cat_f", "sode_sexual_4cat_f", "hsi_contact_4cat_f" ),
-  .f = ~ dplyr::bind_rows(socio_demo_stats_list[[.x]])
+  .x = socio_demo_cont_cols,
+  .f = ~ dplyr::bind_rows(socio_demo_cont_stats_list[[.x]])
 )
 
 # Reorder the columns so that `cat` comes after `var`
-socio_demo_table <- socio_demo_table |> 
-  dplyr::select(var, cat, everything())
+socio_demo_cont_table <- socio_demo_cont_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+socio_demo_cont_table <- socio_demo_cont_table %>%
+  left_join(., soc_dem_desc, by = c("var" = "name"))
 ```
 
-<!-- Make a variable name key -->
-
-## Variable Name Key
-
-The following table provides a description for each variable that appears in the following tables of descriptive statistics.
-
+<!-- ### Categorical data -->
 ```{r}
-#| label: lead-panel-data-variable-name-key
+#| label: socio-demo-add-cat-stats-list
 #| echo: false
 
-key <- tribble(
- ~var, ~description,
- "sode_age_years", "Participant's age in years",
- "sode_people_cont", "The number of people that live in the participant's household, including the participant",
- "sode_race_8cat_f", "The participant's self-reported race",
- "sode_race_eth_6cat_f", "The participant's self-reported race/ ethnicity collapsed into 4 categories",
- "sode_marital_8cat_f", "The participant's self-reported marital status",
- "sogi_identity_5cat_f", "The particpant's self-reported gender identity",
- "sogi_orientation_8cat_f", "The particpant's self-reported sexual orientation",
- "sode_hispanic_4cat_f", "Participant's self-report of Hispanic ethnicity", 
- "sode_school_9cat_f", "Participant's self-reported highest level of schooling completed",
- "sode_employed_11cat_f", "Participant's self-reported employment status",
- "sode_income_9cat_f", "Participant's self-reported total household income before taxes",
- "sode_military_4cat_f", "Whether or not the participant has ever served in the military",
- "sode_unwanted_4cat_f", "Whether or not the participant has ever received unwanted, threatening or repeated sexual attention during military service",
- "sode_sexual_4cat_f", "Whether or not the participant has ever had sexual contact against their will or when they were unable to say no during military service",
- "hsi_contact_4cat_f", "Whether or not the participant provided assent for future contact"
-)
+socio_demo_cat_stats_list <- socio_demo_cat_cols |>
+  rlang::set_names(socio_demo_cat_cols) |> 
+  purrr::map(~ n_percent_ci(socio_demo, !! rlang::sym(.x), 1))
 
-DT::datatable(
-  key,
-  colnames = c("Variable Name", "Variable Description")
-)
 ```
-
-## Unique People Summary Table
 
 ```{r}
 #| echo: false
 
-socio_demo_unique_table <- socio_demo_unique_list$df_unique_summary
+socio_demo_cat_table <- purrr::map_dfr(
+  # This is where we can set the order of the rows
+  .x = socio_demo_cat_cols,
+  .f = ~ dplyr::bind_rows(socio_demo_cat_stats_list[[.x]])
+)
 
-DT::datatable(
-  socio_demo_unique_table,
-  colnames = c("", ""),
-  escape = FALSE, # So the HTML superscript in the column header will work
-  options = list(
-    columnDefs = list(
-      # Hide row numbers column from view
-      list(targets = 0, visible = FALSE),
-      # Center values
-      list(className = 'dt-left', targets = 1:2),
-      # Make first column bold
-      list(className = 'dt-bold', targets = 1)
-    )
-  )
-) |>
-    DT::formatStyle(1,
-    fontWeight = 'bold'
-    )
+# Reorder the columns so that `cat` comes after `var`
+socio_demo_cat_table <- socio_demo_cat_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+socio_demo_cat_table <- socio_demo_cat_table %>%
+  left_join(., soc_dem_desc, by = c("var" = "name"))
 ```
 
+```{r}
+#| echo: false
+# Split data frame into list of data frames by variable
+socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$var)
+
+```
+
+
+<!-- ## Create Flextables -->
 
 ## Overall Statistics for Only the First Visit for Each Person
 
-```{r}
-#| echo: false
+### Continuous Variables
 
-# Add a column that we can use to shade every other var name.
-socio_demo_table <- add_shade_column(socio_demo_table)
-
-
-DT::datatable(
-  socio_demo_table,
-  colnames = c("Shade", "Variable", "Category", "N", "Statistic* (95% CI)"),
-  escape = FALSE, # So the HTML superscript in the column header will work
-  options = list(
-    pageLength = 20,
-    columnDefs = list(
-      # Center n and formatted stats
-      list(className = 'dt-center', targets = 4:5),
-      # Hide row numbers column from view
-      list(targets = 0, visible = FALSE),
-      # Hide "shade" column from view
-      list(targets = 1, visible = FALSE)
-    )
-  )
-) |> 
-  DT::formatStyle(
-    "shade",
-    target = "row",
-    backgroundColor = DT::styleEqual(c(0, 1), c('white', '#ededed'))
-  )
-```
-
-___NOTE: The statistic is the mean for numeric variables and the percent of N for categorical variables___
-
-```{r}
-#| echo: false
-
-# Create and format flextables that can be downloaded in Word document
-socio_demo_flex <- flextable(socio_demo_table, 
-                  col_keys = c("var", "cat", "n", "formatted_stats")
-                  ) %>%
-  # Set caption
-  set_caption("Summary statistics for DETECT F/U Participants Sociodemographic Information Dataset") %>%
-  
-  # Alternatively shade each group
-  bg(i = ~ shade == "FALSE", bg = "#ededed", part = "body") %>% 
-  
+```{r, echo = FALSE}
+# Create flextable
+cont_desc <- flextable(socio_demo_cont_table, col_keys = c("var", "description")) %>%
   # Rename columns
   set_header_labels(
     var = "Variable", 
-    cat = "Category", 
-    "n" = "N",
-    "formatted_stats" = "Statistic* (95% CI)"
-  )%>%
+    description = "Description")%>%
   
-  # Add footnote
-  footnote(
-  i = 1, 
-  j = ~ formatted_stats,
-  value = as_paragraph(
-    c("The statistic is the mean for numeric variables and the percent of N for categorical variables")
-  ),
-  ref_symbols = c("*"),
-  part = "header", inline = TRUE
-) %>%
+  # Set width and alignment
+  width(width = 4.8, unit = 'in') %>%
+  align(align = "left") %>%
+  theme_alafoli()
   
-  # Format width of table
-  width(width = 1.7)
+cont_desc
 ```
 
-## 🔴 Testing out downloading
+```{r, echo = FALSE}
+# Create flextable
+cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "n", "formatted_stats")) %>%
+  # Rename columns
+  set_header_labels(
+    var = "Variable",
+    "n" = "N",
+    "formatted_stats" = "Mean of N (95% CI)") %>%
+  
+  # Shade alternating rows using zebra theme
+  theme_zebra() %>%
+  
+  # Set header alignment
+  align(align = "left", part = "header") %>%
+  
+  # Set table width and alignment
+  width(width = 4.8, unit = 'in') %>%
+  align(align = "left")
+  
+cont_flextable
+```
 
-Example from the [downloadthis website](https://fmmattioni.github.io/downloadthis/index.html). This works, but Excel isn't the most user-friendly format. 
 
-Turn the `socio_demo_table` into a downloadable flextable object in a Word document.
+### Categorical Variables
+
+```{r, include = FALSE}
+cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
+  # Extract each variable data frame from list 
+  df <- data.frame(table_list[[var_name]])
+  
+  # Set up table header line text including variable name and description
+  title_cap <- as_paragraph(var_name)
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+    
+    # Create flextable
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+      # Rename columns
+      set_header_labels(
+        var = "Variable", 
+        cat = "Category", 
+        "n" = "N",
+        "formatted_stats" = "Percent of N (95% CI)") %>%
+      
+      # Shade alternating rows using zebra theme
+      theme_zebra() %>%
+      
+      # Format Header lines
+      add_header_lines(desc_cap) %>%
+      add_header_lines(title_cap) %>%
+      bg(bg = "transparent", part = "header", i = c(1,2)) %>%
+      bold(i = 2, bold = FALSE, part = "header") %>%
+      align(align = "left", part = "header") %>%
+      
+      # Set width and alignment
+      width(width = 4.8, unit = 'in') %>%
+      align(align = "left")
+    
+    flex_tab
+}
+```
+
+
+```{r, results ='asis', echo=FALSE}
+flextables <- lapply(socio_demo_cat_cols, cat_flextable)
+
+for (x in 1:15) {
+  cat(knit_print(flextables[[x]]))
+  }
+
+```
+
+## Download Tables in Word File
 
 ```{r}
-#| echo: false
+#| include: false
+#| eval: false
+
+# Define title and subtitle styles
+title_style <- fp_text_lite(font.size = 18, bold = TRUE)
+subtitle_style <- fp_text_lite(font.size = 14, bold = TRUE, color = "#A7A7A7")
+
 
 #  Create an empty Word document
 soc_doc <- read_docx()
 
-# Add tables to Word document
-soc_doc <- soc_doc %>% 
-  body_add_flextable(socio_demo_flex, align = "left")
+
+soc_doc <- soc_doc %>%
+  
+  # Add Headings
+  body_add_fpar(fpar(ftext("Sociodemographic Tables", prop = title_style))) %>%
+  body_add_par("") %>%
+  body_add_fpar(fpar(ftext("Continuous Variables", prop = subtitle_style))) %>%
+  body_add_par("") %>%
+  
+  # Add continuous variable tables to Word document
+  body_add_flextable(width(cont_desc, width = 3.4, unit = "in"), align = "left") %>%
+  body_add_par("") %>%
+  body_add_flextable(width(cont_flextable, width = 2.27, unit = "in"), align = "left") %>%
+  body_add_par("") %>%
+  
+  # Add Heading
+  body_add_fpar(fpar(ftext("Categorical Variables", prop = subtitle_style))) 
+
+# Add categorical variable tables into Word document
+for (var_name in socio_demo_cat_cols) {
+  cat_flex <- cat_flextable(var_name)
+  # Set width of tables
+  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  # Prevent table breaking up into different pages.
+  paginate(init = TRUE, hdr_ftr = TRUE)
+  # Align tables and add a separating empty line between each table    
+  soc_doc <- soc_doc %>%
+    body_add_flextable(cat_flex, align = "left") %>%
+    body_add_par("")
+    
+}
+  
 
 # print the word document
-print(soc_doc, target = "socio_demo_overall.docx")
+print(soc_doc, target = "../sections/socio_demo_overall.docx")
 ```
 
+
 ```{r}
-#| label: download_docx_example
+#| label: download_docx
 #| echo: false
 
 downloadthis::download_file(
   path = "socio_demo_overall.docx",
-  output_name = "Sociodemographic Information Summary",
+  output_name = "Sociodemographic Information Tables",
   button_label = "Download table",
   button_type = "success",
   has_icon = TRUE,
   icon = "fa fa-save"
 )
 ```
+
 
