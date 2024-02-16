@@ -1,0 +1,16 @@
+/*-- scss:rules --*/
+.bg-vb-red {
+  color: #ffffff;
+  background-color: #d15a8e;
+  border-color: #ffffff;
+}
+
+.bg-vb-blue {
+  color: #ffffff;
+  background-color: #95b0ff;
+  border-color: #ffffff;
+}
+
+.card-header {
+  background-color: #F0F0F0;
+}

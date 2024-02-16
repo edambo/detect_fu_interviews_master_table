@@ -1,0 +1,216 @@
+---
+always_allow_html: yes
+---
+
+# Home Inspection
+
+This page contains tables that summarize home inspections data for the DETECT F/U Interviews participants. Data for all follow-up visits is included even if a participant was visited more than once.
+
+```{r}
+#| include: false
+
+library(dplyr, warn.conflicts = FALSE)
+library(haven)
+library(freqtables)
+library(flextable)
+library(officer)
+library(knitr)
+
+
+# Import the data that will be used to create the tables.
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+
+# Import dataframe containing description of variables
+cls_desc <- readRDS("../sections/variable_descriptions/clutter_scale_var_desc.rds")
+
+# Import functions that will be used to calculate statistics
+# Overall - Continuous columns
+source("../R/n_mean_ci.R")
+source("../R/n_median_ci.R")
+source("../R/cont_stats.R")
+
+# Overall - Categorical columns
+source("../R/n_percent_ci.R")
+
+# By group - Continuous columns
+source("../R/n_mean_ci_grouped.R")
+source("../R/n_median_ci_grouped.R")
+source("../R/cont_stats_grouped.R")
+
+# By group - Categorical columns
+source("../R/n_percent_ci_grouped.R")
+
+# Import function that will filter out the df from the merged df
+source("../R/extract_df_from_merged_detect.R")
+```
+
+<!-- ## Create a data set with only the first visit for each unique person -->
+
+```{r}
+#| echo: false
+# Extract the relevant df from the merged data frame
+cls <- filter_merged_df(detect_fu_merge, "_cls")
+
+# List of dfs of unique people and whether they were visited one or multiple times 
+# cls_unique_list <- unique_people(cls_filter)
+
+# Extract df containing only the first visits for each participant
+# cls <- cls_unique_list$df_first_visit_only
+```
+
+<!-- ## Create lists of columns to analyze -->
+
+```{r}
+#| echo: false
+# Create list of the names of the factor columns
+
+cls_cols <- cls %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+```
+
+
+<!-- ## Create data frame that contains overall summary statistics for the data -->
+
+```{r}
+#| echo: false
+# add variables to list
+
+cls_stats_list <- cls_cols |>
+  rlang::set_names(cls_cols) |> 
+  purrr::map(~ n_percent_ci(cls, !! rlang::sym(.x), 1))
+
+```
+
+```{r}
+#| echo: false
+
+cls_table <- purrr::map_dfr(
+  # Bind the list items together as rows
+  .x = cls_cols,
+  .f = ~ dplyr::bind_rows(cls_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+cls_table <- cls_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+cls_table <- cls_table %>%
+  left_join(., cls_desc, by = c("var" = "name"))
+```
+
+```{r}
+#| echo: false
+# Split data frame into list of data frames by variable
+cls_table_list <- split(cls_table, cls_table$var)
+
+```
+
+
+<!-- ## Create Flextables -->
+
+## Tables
+
+```{r, include = FALSE}
+cat_flextable <- function(var_name, table_list = cls_table_list) {
+  # Extract each variable data frame from list 
+  df <- data.frame(table_list[[var_name]])
+  
+  # Set up table header line text including variable name and description
+  title_cap <- as_paragraph(var_name)
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+    
+    # Create flextable
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+      # Rename columns
+      set_header_labels(
+        var = "Variable", 
+        cat = "Category", 
+        "n" = "N",
+        "formatted_stats" = "Percent of N (95% CI)") %>%
+      
+      # Shade alternating rows using zebra theme
+      theme_zebra() %>%
+      
+      # Format Header lines
+      add_header_lines(desc_cap) %>%
+      add_header_lines(title_cap) %>%
+      bg(bg = "transparent", part = "header", i = c(1,2)) %>%
+      bold(i = 2, bold = FALSE, part = "header") %>%
+      align(align = "left", part = "header") %>%
+      
+      # Set width and alignment
+      width(width = 4.8, unit = 'in') %>%
+      align(align = "left") %>%
+      add_footer_lines("")
+    
+    flex_tab
+}
+```
+
+
+```{r, results ='asis', echo=FALSE}
+flextables <- lapply(cls_cols, cat_flextable)
+
+for (x in 1:length(cls_cols)) {
+  cat(knit_print(flextables[[x]]))
+  }
+
+```
+
+## Download Tables in Word File
+
+```{r}
+#| include: false
+
+# Define title and subtitle styles
+title_style <- fp_text_lite(font.size = 18, bold = TRUE)
+subtitle_style <- fp_text_lite(font.size = 14, bold = TRUE, color = "#A7A7A7")
+
+
+#  Create an empty Word document
+cls_doc <- read_docx()
+
+
+cls_doc <- cls_doc %>%
+  
+  # Add Headings
+  body_add_fpar(fpar(ftext("Home Inspection Tables", prop = title_style))) %>%
+  body_add_par("")
+
+# Add categorical variable tables into Word document
+for (var_name in cls_cols) {
+  cat_flex <- cat_flextable(var_name)
+  # Set width of tables
+  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  # Prevent table breaking up into different pages.
+  paginate(init = TRUE, hdr_ftr = TRUE)
+  # Align tables and add a separating empty line between each table    
+  cls_doc <- cls_doc %>%
+    body_add_flextable(cat_flex, align = "left") %>%
+    body_add_par("")
+    
+}
+  
+
+# print the word document
+print(cls_doc, target = "../sections/clutter_scale_tables.docx")
+```
+
+
+```{r}
+#| label: download_docx
+#| echo: false
+
+downloadthis::download_file(
+  path = "clutter_scale_tables.docx",
+  output_name = "Home Inspection Tables",
+  button_label = "Download table",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save"
+)
+```
+
+
+
+

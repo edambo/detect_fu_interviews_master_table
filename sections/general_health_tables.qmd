@@ -1,0 +1,218 @@
+---
+always_allow_html: yes
+---
+
+# General Health
+
+This page contains tables that summarize general health data for the DETECT F/U Interviews participants. Data for only the first follow-up visit for each participant is included.
+
+```{r}
+#| include: false
+
+library(dplyr, warn.conflicts = FALSE)
+library(haven)
+library(freqtables)
+library(flextable)
+library(officer)
+library(knitr)
+
+
+# Import the data that will be used to create the tables.
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+
+# Import dataframe containing description of variables
+glh_desc <- readRDS("../sections/variable_descriptions/general_health_var_desc.rds")
+
+# Import functions that will be used to calculate statistics
+# Overall - Continuous columns
+source("../R/n_mean_ci.R")
+source("../R/n_median_ci.R")
+source("../R/cont_stats.R")
+
+# Overall - Categorical columns
+source("../R/n_percent_ci.R")
+
+# By group - Continuous columns
+source("../R/n_mean_ci_grouped.R")
+source("../R/n_median_ci_grouped.R")
+source("../R/cont_stats_grouped.R")
+
+# By group - Categorical columns
+source("../R/n_percent_ci_grouped.R")
+
+# Import function that will filter out the df from the merged df
+source("../R/extract_df_from_merged_detect.R")
+
+# Import function that will create a data set with only the first visit for each unique person
+source("../R/unique_people.R")
+```
+
+<!-- ## Create a data set with only the first visit for each unique person -->
+
+```{r}
+#| echo: false
+# Extract the general health df from the merged data frame
+glh <- filter_merged_df(detect_fu_merge, "_glh")
+
+# List of dfs of unique people and whether they were visited one or multiple times 
+glh_unique_list <- unique_people(glh)
+
+# Extract df containing only the first visits for each participant
+glh <- glh_unique_list$df_first_visit_only
+```
+
+<!-- ## Create lists of columns to analyze -->
+
+```{r}
+#| echo: false
+# Create list of the names of the factor columns
+
+glh_cols <- glh %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+```
+
+
+<!-- ## Create data frame that contains overall summary statistics for the data -->
+
+```{r}
+#| echo: false
+# add categorical variables to list
+
+glh_stats_list <- glh_cols |>
+  rlang::set_names(glh_cols) |> 
+  purrr::map(~ n_percent_ci(glh, !! rlang::sym(.x), 1))
+
+```
+
+```{r}
+#| echo: false
+
+glh_table <- purrr::map_dfr(
+  # Bind the list items together as rows
+  .x = glh_cols,
+  .f = ~ dplyr::bind_rows(glh_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+glh_table <- glh_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+glh_table <- glh_table %>%
+  left_join(., glh_desc, by = c("var" = "name"))
+```
+
+```{r}
+#| echo: false
+# Split data frame into list of data frames by variable
+glh_table_list <- split(glh_table, glh_table$var)
+
+```
+
+
+<!-- ## Create Flextables -->
+
+## Tables
+
+```{r, include = FALSE}
+cat_flextable <- function(var_name, table_list = glh_table_list) {
+  # Extract each variable data frame from list 
+  df <- data.frame(table_list[[var_name]])
+  
+  # Set up table header line text including variable name and description
+  title_cap <- as_paragraph(var_name)
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+    
+    # Create flextable
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+      # Rename columns
+      set_header_labels(
+        var = "Variable", 
+        cat = "Category", 
+        "n" = "N",
+        "formatted_stats" = "Percent of N (95% CI)") %>%
+      
+      # Shade alternating rows using zebra theme
+      theme_zebra() %>%
+      
+      # Format Header lines
+      add_header_lines(desc_cap) %>%
+      add_header_lines(title_cap) %>%
+      bg(bg = "transparent", part = "header", i = c(1,2)) %>%
+      bold(i = 2, bold = FALSE, part = "header") %>%
+      align(align = "left", part = "header") %>%
+      
+      # Set width and alignment
+      width(width = 4.8, unit = 'in') %>%
+      align(align = "left") %>%
+      add_footer_lines("")
+    
+    flex_tab
+}
+```
+
+
+```{r, results ='asis', echo=FALSE}
+flextables <- lapply(glh_cols, cat_flextable)
+
+for (x in 1:length(glh_cols)) {
+  cat(knit_print(flextables[[x]]))
+  }
+
+```
+
+## Download Tables in Word File
+
+```{r}
+#| include: false
+
+# Define title and subtitle styles
+title_style <- fp_text_lite(font.size = 18, bold = TRUE)
+subtitle_style <- fp_text_lite(font.size = 14, bold = TRUE, color = "#A7A7A7")
+
+
+#  Create an empty Word document
+glh_doc <- read_docx()
+
+
+glh_doc <- glh_doc %>%
+  
+  # Add Headings
+  body_add_fpar(fpar(ftext("General Health Tables", prop = title_style))) %>%
+  body_add_par("")
+
+# Add categorical variable tables into Word document
+for (var_name in glh_cols) {
+  cat_flex <- cat_flextable(var_name)
+  # Set width of tables
+  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  # Prevent table breaking up into different pages.
+  paginate(init = TRUE, hdr_ftr = TRUE)
+  # Align tables and add a separating empty line between each table    
+  glh_doc <- glh_doc %>%
+    body_add_flextable(cat_flex, align = "left") %>%
+    body_add_par("")
+    
+}
+  
+
+# print the word document
+print(glh_doc, target = "../sections/general_health_tables.docx")
+```
+
+
+```{r}
+#| label: download_docx
+#| echo: false
+
+downloadthis::download_file(
+  path = "general_health_tables.docx",
+  output_name = "General Health Tables",
+  button_label = "Download table",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save"
+)
+```
+
+
+

@@ -4,7 +4,7 @@ always_allow_html: yes
 
 # Sociodemographic Information
 
-This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants.
+This page contains tables that summarize sociodemographic data for the DETECT F/U Interviews participants. Data for only the first follow-up visit for each participant is included.
 
 ```{r}
 #| label: sociodemographic-information-data-setup
@@ -17,8 +17,6 @@ library(flextable)
 library(officer)
 library(knitr)
 
-# Import function that will be used to add shade to the table by variable name
-source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
 detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
@@ -46,7 +44,7 @@ source("../R/n_percent_ci_grouped.R")
 # Import function that will filter out the sociodemographic information df from the merged df
 source("../R/extract_df_from_merged_detect.R")
 
-# Import function that will create summary data sets of unique people and create a data set with only the first visit for each unique person
+# Import function that will create a data set with only the first visit for each unique person
 source("../R/unique_people.R")
 ```
 
@@ -54,25 +52,25 @@ source("../R/unique_people.R")
 
 ```{r}
 #| echo: false
-
+# Extract the sociodemographic df from the merged data frame
 socio_demo_filter <- filter_merged_df(detect_fu_merge, "_soc")
 
+# List of dfs of unique people and whether they were visited one or multiple times 
 socio_demo_unique_list <- unique_people(socio_demo_filter)
 
+# Extract df containing only the first visits for each participant
 socio_demo <- socio_demo_unique_list$df_first_visit_only
 ```
 
 <!-- ## Create lists of columns to analyze -->
 
 ```{r}
-#| label: socio-demo-define-cat-cols
 #| echo: false
 
 socio_demo_cat_cols <- socio_demo %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
 ```
 
 ```{r}
-#| label: socio-demo-define-cont-cols
 #| echo: false
 
 socio_demo_cont_cols <- c("sode_age_years", "sode_people_cont")
@@ -83,20 +81,18 @@ socio_demo_cont_cols <- c("sode_age_years", "sode_people_cont")
 <!-- ### Continuous data -->
 
 ```{r}
-#| label: socio-demo-add-cont-stats-list
 #| echo: false
-
+# add continuous variables to list
 socio_demo_cont_stats_list <- socio_demo_cont_cols  |> 
   rlang::set_names(socio_demo_cont_cols) |> 
   purrr::map(~ n_mean_ci(socio_demo, !! rlang::sym(.x), 1))
 ```
 
 ```{r}
-#| label: socio-demo-cont-stats-list-to-df
 #| echo: false
 
 socio_demo_cont_table <- purrr::map_dfr(
-  # This is where we can set the order of the rows
+  # Bind the rows together
   .x = socio_demo_cont_cols,
   .f = ~ dplyr::bind_rows(socio_demo_cont_stats_list[[.x]])
 )
@@ -112,8 +108,8 @@ socio_demo_cont_table <- socio_demo_cont_table %>%
 
 <!-- ### Categorical data -->
 ```{r}
-#| label: socio-demo-add-cat-stats-list
 #| echo: false
+# add categorical variables to list
 
 socio_demo_cat_stats_list <- socio_demo_cat_cols |>
   rlang::set_names(socio_demo_cat_cols) |> 
@@ -125,7 +121,7 @@ socio_demo_cat_stats_list <- socio_demo_cat_cols |>
 #| echo: false
 
 socio_demo_cat_table <- purrr::map_dfr(
-  # This is where we can set the order of the rows
+  # Bind the rows together
   .x = socio_demo_cat_cols,
   .f = ~ dplyr::bind_rows(socio_demo_cat_stats_list[[.x]])
 )
@@ -149,9 +145,7 @@ socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$va
 
 <!-- ## Create Flextables -->
 
-## Overall Statistics for Only the First Visit for Each Person
-
-### Continuous Variables
+## Continuous Variable Tables
 
 ```{r, echo = FALSE}
 # Create flextable
@@ -164,7 +158,8 @@ cont_desc <- flextable(socio_demo_cont_table, col_keys = c("var", "description")
   # Set width and alignment
   width(width = 4.8, unit = 'in') %>%
   align(align = "left") %>%
-  theme_alafoli()
+  theme_alafoli() %>%
+      add_footer_lines("")
   
 cont_desc
 ```
@@ -186,13 +181,13 @@ cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "n", "for
   
   # Set table width and alignment
   width(width = 4.8, unit = 'in') %>%
-  align(align = "left")
+  align(align = "left") 
   
 cont_flextable
 ```
 
 
-### Categorical Variables
+## Categorical Variable Tables
 
 ```{r, include = FALSE}
 cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
@@ -224,7 +219,8 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
       
       # Set width and alignment
       width(width = 4.8, unit = 'in') %>%
-      align(align = "left")
+      align(align = "left") %>%
+      add_footer_lines("")
     
     flex_tab
 }
@@ -234,7 +230,7 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
 ```{r, results ='asis', echo=FALSE}
 flextables <- lapply(socio_demo_cat_cols, cat_flextable)
 
-for (x in 1:15) {
+for (x in 1:length(socio_demo_cat_cols)) {
   cat(knit_print(flextables[[x]]))
   }
 
@@ -243,8 +239,7 @@ for (x in 1:15) {
 ## Download Tables in Word File
 
 ```{r}
-#| include: false
-#| eval: false
+#| include : false
 
 # Define title and subtitle styles
 title_style <- fp_text_lite(font.size = 18, bold = TRUE)
@@ -288,7 +283,7 @@ for (var_name in socio_demo_cat_cols) {
   
 
 # print the word document
-print(soc_doc, target = "../sections/socio_demo_overall.docx")
+print(soc_doc, target = "../sections/sociodemographic_information_tables.docx")
 ```
 
 
@@ -297,7 +292,7 @@ print(soc_doc, target = "../sections/socio_demo_overall.docx")
 #| echo: false
 
 downloadthis::download_file(
-  path = "socio_demo_overall.docx",
+  path = "sociodemographic_information_tables.docx",
   output_name = "Sociodemographic Information Tables",
   button_label = "Download table",
   button_type = "success",
