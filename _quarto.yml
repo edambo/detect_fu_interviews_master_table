@@ -4,7 +4,9 @@ project:
 # Website options and formatting
 format:
   html:
-    theme: cosmo
+    theme: 
+    - cosmo
+    - styles/custom.css # custom formatting for value boxes
     css: styles.css
     toc: true
 
@@ -26,17 +28,14 @@ website:
         href: about.qmd
       - text: "Follow-up Instruments"
         menu: 
-          - text: "Recruitment and Scheduling"
-          - href: sections/recruitment_scheduling.qmd
-          - text: "Sociodemographic Information"
-            href: sections/sociodemographic_tables.qmd
-          - text: "General Health"
-          - text: "Home Inspection"
-          - text: "EM Self-Report"
-          - text: "APS Investigations"
-          - text: "Interviewer Observations"
-          - text: "Lead Panel Assessment"
-            href: sections/lead_panel_assessment_tables.qmd
+          - sections/recruitment_scheduling_dashboard.qmd
+          - sections/sociodemographic_tables.qmd
+          - sections/general_health_tables.qmd
+          - sections/clutter_scale_tables.qmd
+          - sections/self_report_tables.qmd
+          - sections/aps_investigations_tables.qmd
+          - sections/observational_measures_tables.qmd
+          - sections/lead_panel_assessment_tables.qmd
 
 # Bibliography and citation options
 bibliography: references.bib
@@ -51,6 +50,4 @@ editor: source
 execute:
   freeze: auto
   
-
-      
 

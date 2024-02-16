@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>DETECT Follow-up Interview Master Table</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/font-awesome-5.13.0/js/script.js"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DETECT Follow-up Interview Master Table</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-follow-up-instruments" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Follow-up Instruments</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-follow-up-instruments">    
+        <li>
+    <a class="dropdown-item" href="../sections/recruitment_scheduling_dashboard.html">
+ <span class="dropdown-text">Recruitment and Scheduling Dashboard</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/sociodemographic_tables.html">
+ <span class="dropdown-text">Sociodemographic Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/general_health_tables.html">
+ <span class="dropdown-text">General Health</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/clutter_scale_tables.html">
+ <span class="dropdown-text">Home Inspection</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/self_report_tables.html">
+ <span class="dropdown-text">EM Self Report</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/aps_investigations_tables.html">
+ <span class="dropdown-text">APS Investigations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/observational_measures_tables.html">
+ <span class="dropdown-text">Interviewer Observations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../sections/lead_panel_assessment_tables.html">
+ <span class="dropdown-text">LEAD Panel Assessment</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#home-inspection" id="toc-home-inspection" class="nav-link active" data-scroll-target="#home-inspection">Home Inspection</a>
+  <ul class="collapse">
+  <li><a href="#tables" id="toc-tables" class="nav-link" data-scroll-target="#tables">Tables</a></li>
+  <li><a href="#download-tables-in-word-file" id="toc-download-tables-in-word-file" class="nav-link" data-scroll-target="#download-tables-in-word-file">Download Tables in Word File</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/blob/main/sections/clutter_scale_tables.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/edit/main/sections/clutter_scale_tables.qmd" class="toc-action"><i class="bi empty"></i>Edit this page</a></li><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="home-inspection" class="level1">
+<h1>Home Inspection</h1>
+<p>This page contains tables that summarize home inspections data for the DETECT F/U Interviews participants. Data for all follow-up visits is included even if a participant was visited more than once.</p>
+<!-- ## Create a data set with only the first visit for each unique person -->
+<!-- ## Create lists of columns to analyze -->
+<!-- ## Create data frame that contains overall summary statistics for the data -->
+<!-- ## Create Flextables -->
+<section id="tables" class="level2">
+<h2 class="anchored" data-anchor-id="tables">Tables</h2>
+<div class="tabwid"><style>.cl-87ed7cb6{}.cl-87d5323c{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-87d533a4{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-87df37c8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-87df9cae{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-87df9cc2{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-87df9ccc{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-87df9cd6{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-87ed7cb6"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d5323c">clutter_bedroom_photo_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d533a4">CL_3b. May I take a picture of your bedroom?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-87df9cc2"><p class="cl-87df37c8"><span class="cl-87d5323c">Variable</span></p></th><th class="cl-87df9cc2"><p class="cl-87df37c8"><span class="cl-87d5323c">Category</span></p></th><th class="cl-87df9cc2"><p class="cl-87df37c8"><span class="cl-87d5323c">N</span></p></th><th class="cl-87df9cc2"><p class="cl-87df37c8"><span class="cl-87d5323c">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">clutter_bedroom_photo_3cat_f</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">No</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">588</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">70.9 (67.7 - 73.9)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d533a4">clutter_bedroom_photo_3cat_f</span></p></td><td class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d533a4">Yes</span></p></td><td class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d533a4">239</span></p></td><td class="cl-87df9cae"><p class="cl-87df37c8"><span class="cl-87d533a4">28.8 (25.8 - 32.0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">clutter_bedroom_photo_3cat_f</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">No bedroom</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">2</span></p></td><td class="cl-87df9ccc"><p class="cl-87df37c8"><span class="cl-87d533a4">0.2 (0.1 - 1.0)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-87df9cd6"><p class="cl-87df37c8"><span class="cl-87d533a4"></span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-881ccd2c{}.cl-87fd6ac2{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-87fd6ae0{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8811835e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8811d9da{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8811da02{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8811da16{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8811da20{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-881ccd2c"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ac2">clutter_kitchen_photo_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ae0">CL_2b. May I take a picture of your kitchen?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-8811da02"><p class="cl-8811835e"><span class="cl-87fd6ac2">Variable</span></p></th><th class="cl-8811da02"><p class="cl-8811835e"><span class="cl-87fd6ac2">Category</span></p></th><th class="cl-8811da02"><p class="cl-8811835e"><span class="cl-87fd6ac2">N</span></p></th><th class="cl-8811da02"><p class="cl-8811835e"><span class="cl-87fd6ac2">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">clutter_kitchen_photo_3cat_f</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">No</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">558</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">67.7 (64.4 - 70.8)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ae0">clutter_kitchen_photo_3cat_f</span></p></td><td class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ae0">Yes</span></p></td><td class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ae0">266</span></p></td><td class="cl-8811d9da"><p class="cl-8811835e"><span class="cl-87fd6ae0">32.3 (29.2 - 35.6)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">clutter_kitchen_photo_3cat_f</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">No living room</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">0</span></p></td><td class="cl-8811da16"><p class="cl-8811835e"><span class="cl-87fd6ae0">0.0 (NaN - NaN)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-8811da20"><p class="cl-8811835e"><span class="cl-87fd6ae0"></span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-8832e9ae{}.cl-88239f58{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-88239f6c{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-882a4da8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-882a66e4{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-882a66ee{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-882a66ef{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-882a66f8{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8832e9ae"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f58">clutter_living_photo_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f6c">CL_1b. May I take a picture of your living room?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-882a66ee"><p class="cl-882a4da8"><span class="cl-88239f58">Variable</span></p></th><th class="cl-882a66ee"><p class="cl-882a4da8"><span class="cl-88239f58">Category</span></p></th><th class="cl-882a66ee"><p class="cl-882a4da8"><span class="cl-88239f58">N</span></p></th><th class="cl-882a66ee"><p class="cl-882a4da8"><span class="cl-88239f58">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">clutter_living_photo_3cat_f</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">No</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">561</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">66.6 (63.4 - 69.7)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f6c">clutter_living_photo_3cat_f</span></p></td><td class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f6c">Yes</span></p></td><td class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f6c">274</span></p></td><td class="cl-882a66e4"><p class="cl-882a4da8"><span class="cl-88239f6c">32.5 (29.5 - 35.8)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">clutter_living_photo_3cat_f</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">No living room</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">7</span></p></td><td class="cl-882a66ef"><p class="cl-882a4da8"><span class="cl-88239f6c">0.8 (0.4 - 1.7)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-882a66f8"><p class="cl-882a4da8"><span class="cl-88239f6c"></span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-884714ec{}.cl-8839a154{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8839a172{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-883ec170{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-883edf70{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-883edf7a{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-883edf84{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-883edf8e{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-884714ec"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a154">look_bedroom_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a172">CL_3a. May I take a look at the bedroom where you sleep most regularly?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-883edf7a"><p class="cl-883ec170"><span class="cl-8839a154">Variable</span></p></th><th class="cl-883edf7a"><p class="cl-883ec170"><span class="cl-8839a154">Category</span></p></th><th class="cl-883edf7a"><p class="cl-883ec170"><span class="cl-8839a154">N</span></p></th><th class="cl-883edf7a"><p class="cl-883ec170"><span class="cl-8839a154">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">look_bedroom_3cat_f</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">No</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">323</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">38.2 (35.0 - 41.5)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a172">look_bedroom_3cat_f</span></p></td><td class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a172">Yes</span></p></td><td class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a172">520</span></p></td><td class="cl-883edf70"><p class="cl-883ec170"><span class="cl-8839a172">61.5 (58.1 - 64.7)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">look_bedroom_3cat_f</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">No bedroom</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">3</span></p></td><td class="cl-883edf84"><p class="cl-883ec170"><span class="cl-8839a172">0.4 (0.1 - 1.1)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-883edf8e"><p class="cl-883ec170"><span class="cl-8839a172"></span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-8866ad20{}.cl-8854dd34{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8854dd48{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-885b2d2e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-885b64d8{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-885b64f6{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-885b6500{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-885b650a{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8866ad20"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd34">look_kitchen_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd48">CL_2a. May I take a look at your kitchen?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-885b64f6"><p class="cl-885b2d2e"><span class="cl-8854dd34">Variable</span></p></th><th class="cl-885b64f6"><p class="cl-885b2d2e"><span class="cl-8854dd34">Category</span></p></th><th class="cl-885b64f6"><p class="cl-885b2d2e"><span class="cl-8854dd34">N</span></p></th><th class="cl-885b64f6"><p class="cl-885b2d2e"><span class="cl-8854dd34">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">look_kitchen_3cat_f</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">No</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">218</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">25.8 (23.0 - 28.9)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd48">look_kitchen_3cat_f</span></p></td><td class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd48">Yes</span></p></td><td class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd48">618</span></p></td><td class="cl-885b64d8"><p class="cl-885b2d2e"><span class="cl-8854dd48">73.2 (70.1 - 76.1)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">look_kitchen_3cat_f</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">No kitchen</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">8</span></p></td><td class="cl-885b6500"><p class="cl-885b2d2e"><span class="cl-8854dd48">0.9 (0.5 - 1.9)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-885b650a"><p class="cl-885b2d2e"><span class="cl-8854dd48"></span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-8884ad52{}.cl-88711080{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8871109e{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8879b064{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8879ed5e{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8879ed72{width:4.8in;background-color:rgba(207, 207, 207, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8879ed86{width:4.8in;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8879ed9a{width:4.8in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8884ad52"><thead><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-88711080">look_living_3cat_f</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="4" class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-8871109e">CL_1a. May I take a look at your living room?</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-8879ed72"><p class="cl-8879b064"><span class="cl-88711080">Variable</span></p></th><th class="cl-8879ed72"><p class="cl-8879b064"><span class="cl-88711080">Category</span></p></th><th class="cl-8879ed72"><p class="cl-8879b064"><span class="cl-88711080">N</span></p></th><th class="cl-8879ed72"><p class="cl-8879b064"><span class="cl-88711080">Percent of N (95% CI)</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">look_living_3cat_f</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">No</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">146</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">17.0 (14.6 - 19.6)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-8871109e">look_living_3cat_f</span></p></td><td class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-8871109e">Yes</span></p></td><td class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-8871109e">709</span></p></td><td class="cl-8879ed5e"><p class="cl-8879b064"><span class="cl-8871109e">82.3 (79.6 - 84.8)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">look_living_3cat_f</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">No living room</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">6</span></p></td><td class="cl-8879ed86"><p class="cl-8879b064"><span class="cl-8871109e">0.7 (0.3 - 1.5)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-8879ed9a"><p class="cl-8879b064"><span class="cl-8871109e"></span></p></td></tr></tfoot></table></div>
+</section>
+<section id="download-tables-in-word-file" class="level2">
+<h2 class="anchored" data-anchor-id="download-tables-in-word-file">Download Tables in Word File</h2>
+<div class="cell">
+<div class="cell-output-display">
+<button class="btn btn-success" onclick="fetch('data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,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').then(res => res.blob()).then(blob => {
+      const downloadURL = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none'; // Hide the link
+      document.body.appendChild(a);
+      a.href = downloadURL;
+      a.download = 'Home Inspection Tables.docx';
+      a.click();
+      window.URL.revokeObjectURL(downloadURL);
+      document.body.removeChild(a);
+      return false;
+    });"><i class="fa fa-save"></i> Download table</button>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>DETECT Follow-up Interviews Master Descriptive Tables</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/blob/main/sections/clutter_scale_tables.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/edit/main/sections/clutter_scale_tables.qmd" class="toc-action"><i class="bi empty"></i>Edit this page</a></li><li><a href="https://github.com/brad-cannell/detect_fu_interviews_master_table/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

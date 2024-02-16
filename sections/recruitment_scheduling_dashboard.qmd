@@ -1,0 +1,140 @@
+---
+title: Recruitment and Scheduling Dashboard
+format: dashboard
+orientation: columns
+---
+
+<!-- ## Load packages -->
+```{r}
+library(dplyr)
+library(ggplot2)
+library(flextable)
+library(officer)
+library(ggiraph)
+library(plotly)
+
+# Import the data that will be used to create the tables.
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+
+# Import functions that will be used to calculate statistics
+# Overall - Continuous columns
+source("../R/n_mean_ci.R")
+source("../R/n_median_ci.R")
+source("../R/cont_stats.R")
+
+# Overall - Categorical columns
+source("../R/n_percent_ci.R")
+
+# By group - Continuous columns
+source("../R/n_mean_ci_grouped.R")
+source("../R/n_median_ci_grouped.R")
+source("../R/cont_stats_grouped.R")
+
+# By group - Categorical columns
+source("../R/n_percent_ci_grouped.R")
+
+# Import function that will filter out specific dataframes from the merged df
+source("../R/extract_df_from_merged_detect.R")
+
+# Import function that will create summary data sets of unique people and create a data set with only the first visit for each unique person
+source("../R/unique_people.R")
+```
+
+<!-- ## Extract needed datasets from merged dataframe -->
+```{r}
+#| echo: false
+
+# Participant 
+participant <- filter_merged_df(detect_fu_merge, "_par")
+
+# Sociodemographic Information
+socio_demo <- filter_merged_df(detect_fu_merge, "_soc")
+
+```
+
+
+<!-- ## The number of follow-up interviews completed.-->
+## Column {width="25%" .fill}
+<!-- ## The number of follow-up interviews completed (if they gave consent, then they count).-->
+
+```{r}
+#| echo: false
+#| title: Follow Up Interviews
+#| content: valuebox
+
+# (Based on the code in the "check_consenting participants file, only MedStar IDs with consent should be counted whether or not they are in the consent dataset.)
+
+# Identify participants that gave consent
+consented <- detect_fu_merge %>% filter(consent_given_con == 1) %>% select(medstar_id) %>% unique() %>% nrow()
+
+list(
+  icon = "check2-circle",
+  color = "vb-blue",
+  value = consented
+)
+```
+
+```{r}
+#| echo: false
+#| title: Unique Participants
+#| content: valuebox
+
+unique <- detect_fu_merge %>% filter(consent_given_con == 1) %>% select(unique_id_par) %>% unique() %>% nrow()
+
+list(
+  icon = "person",
+  color = "vb-red",
+  value = unique
+)
+```
+## Column {width="75%" .fill}
+```{r}
+#| include: false
+visits <- detect_fu_merge %>% 
+  filter(consent_given_con == 1) %>%
+  select(unique_id_par, medstar_id) %>% unique() %>%
+  group_by(unique_id_par) %>%
+  mutate(
+    # Column that gives count of rows for each unique_id
+    visit_count = n()
+  ) %>%
+  ungroup() %>%
+  select(unique_id_par, visit_count) %>%
+  unique() %>% 
+  group_by(visit_count) %>%
+  reframe(
+    visit_count,
+    n = n(),
+    n_percent = paste0(format(round((n()/nrow(.))*100, digits = 2), nsmall = 2), " %")
+  ) %>%
+  unique() %>% 
+  arrange(visit_count)
+```
+
+```{r}
+#| echo: false
+#| title: Number of Follow-up Interviews Completed per Person
+flextable(visits) %>%
+  set_header_labels(
+    visit_count = "N of Interviews",
+    n = "N of Participants",
+    n_percent = "N % of Participants "
+  ) %>%
+  theme_zebra(
+    odd_header = "transparent",
+    odd_body = "#f5f5f5",
+    even_header = "transparent",
+    even_body = "transparent"
+  ) %>%
+  align(align = "left", part = "body") %>%
+   align(align = "left", part = "header") %>%
+  width(width = 4, unit = "in")
+
+```
+
+
+
+
+
+
+

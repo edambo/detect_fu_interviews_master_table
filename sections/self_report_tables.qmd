@@ -1,0 +1,302 @@
+---
+always_allow_html: yes
+---
+
+# EM Self Report
+
+This page contains tables that summarize self report data for the DETECT F/U Interviews participants. Data for all follow-up visits is included even if a participant was visited more than once.
+
+```{r}
+#| include: false
+
+library(dplyr, warn.conflicts = FALSE)
+library(haven)
+library(freqtables)
+library(flextable)
+library(officer)
+library(knitr)
+
+
+# Import the data that will be used to create the tables.
+detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+
+# Import dataframe containing description of variables
+sfr_desc <- readRDS("../sections/variable_descriptions/self_report_var_desc.rds")
+
+# Import functions that will be used to calculate statistics
+# Overall - Continuous columns
+source("../R/n_mean_ci.R")
+source("../R/n_median_ci.R")
+source("../R/cont_stats.R")
+
+# Overall - Categorical columns
+source("../R/n_percent_ci.R")
+
+# By group - Continuous columns
+source("../R/n_mean_ci_grouped.R")
+source("../R/n_median_ci_grouped.R")
+source("../R/cont_stats_grouped.R")
+
+# By group - Categorical columns
+source("../R/n_percent_ci_grouped.R")
+
+# Import function that will filter out the df from the merged df
+source("../R/extract_df_from_merged_detect.R")
+```
+
+<!-- ## Create a data set with only the first visit for each unique person -->
+
+```{r}
+#| echo: false
+# Extract the relevant df from the merged data frame
+sfr <- filter_merged_df(detect_fu_merge, "_sfr")
+
+# List of dfs of unique people and whether they were visited one or multiple times 
+# sfr_unique_list <- unique_people(sfr_filter)
+
+# Extract df containing only the first visits for each participant
+# sfr <- sfr_unique_list$df_first_visit_only
+```
+
+<!-- ## Create lists of columns to analyze -->
+
+```{r}
+#| echo: false
+sfr_cat_cols <- sfr %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+```
+
+```{r}
+#| echo: false
+
+sfr_cont_cols <- sfr %>% select(ends_with("years"), ends_with("times")) %>% select(order(colnames(.))) %>% names()
+```
+
+<!-- ## Create data frames that contains overall summary statistics for categorical and continuous data -->
+
+<!-- ### Continuous data -->
+
+```{r}
+#| echo: false
+#| warning: false
+# add continuous variables to list
+sfr_cont_stats_list <- sfr_cont_cols  |> 
+  rlang::set_names(sfr_cont_cols) |> 
+  purrr::map(~ n_mean_ci(sfr, !! rlang::sym(.x), 1))
+```
+
+```{r}
+#| echo: false
+sfr_cont_table <- purrr::map_dfr(
+  # Bind the rows together
+  .x = sfr_cont_cols,
+  .f = ~ dplyr::bind_rows(sfr_cont_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+sfr_cont_table <- sfr_cont_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+sfr_cont_table <- sfr_cont_table %>%
+  left_join(., sfr_desc, by = c("var" = "name"))
+```
+
+<!-- ### Categorical data -->
+```{r}
+#| echo: false
+#| warning: false
+# add categorical variables to list
+sfr_cat_stats_list <- sfr_cat_cols |>
+  rlang::set_names(sfr_cat_cols) |> 
+  purrr::map(~ n_percent_ci(sfr, !! rlang::sym(.x), 1))
+
+```
+
+```{r}
+#| echo: false
+
+sfr_cat_table <- purrr::map_dfr(
+  # Bind the rows together
+  .x = sfr_cat_cols,
+  .f = ~ dplyr::bind_rows(sfr_cat_stats_list[[.x]])
+)
+
+# Reorder the columns so that `cat` comes after `var`
+sfr_cat_table <- sfr_cat_table |> 
+  dplyr::select(everything())
+
+# Add description column 
+sfr_cat_table <- sfr_cat_table %>%
+  left_join(., sfr_desc, by = c("var" = "name"))
+```
+
+```{r}
+#| echo: false
+# Split data frame into list of data frames by variable
+sfr_cat_table_list <- split(sfr_cat_table, sfr_cat_table$var)
+
+```
+
+
+<!-- ## Create Flextables -->
+
+## Continuous Variable Tables
+
+```{r, echo = FALSE}
+# Create flextable
+cont_desc <- flextable(sfr_cont_table, col_keys = c("var", "description")) %>%
+  # Rename columns
+  set_header_labels(
+    var = "Variable", 
+    description = "Description")%>%
+  
+  # Set width and alignment
+  width(width = 4.8, unit = 'in') %>%
+  align(align = "left") %>%
+  theme_alafoli() %>%
+      add_footer_lines("")
+  
+cont_desc
+```
+
+```{r, echo = FALSE}
+# Create flextable
+cont_flextable <- flextable(sfr_cont_table, col_keys = c("var", "n", "formatted_stats")) %>%
+  # Rename columns
+  set_header_labels(
+    var = "Variable",
+    "n" = "N",
+    "formatted_stats" = "Mean of N (95% CI)") %>%
+  
+  # Shade alternating rows using zebra theme
+  theme_zebra() %>%
+  
+  # Set header alignment
+  align(align = "left", part = "header") %>%
+  
+  # Set table width and alignment
+  width(width = 4.8, unit = 'in') %>%
+  align(align = "left") 
+  
+cont_flextable
+```
+
+
+## Categorical Variable Tables
+
+```{r, include = FALSE}
+cat_flextable <- function(var_name, table_list = sfr_cat_table_list) {
+  # Extract each variable data frame from list 
+  df <- data.frame(table_list[[var_name]])
+  
+  # Set up table header line text including variable name and description
+  title_cap <- as_paragraph(var_name)
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+    
+    # Create flextable
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+      # Rename columns
+      set_header_labels(
+        var = "Variable", 
+        cat = "Category", 
+        "n" = "N",
+        "formatted_stats" = "Percent of N (95% CI)") %>%
+      
+      # Shade alternating rows using zebra theme
+      theme_zebra() %>%
+      
+      # Format Header lines
+      add_header_lines(desc_cap) %>%
+      add_header_lines(title_cap) %>%
+      bg(bg = "transparent", part = "header", i = c(1,2)) %>%
+      bold(i = 2, bold = FALSE, part = "header") %>%
+      align(align = "left", part = "header") %>%
+      
+      # Set width and alignment
+      width(width = 4.8, unit = 'in') %>%
+      align(align = "left") %>%
+      add_footer_lines("")
+    
+    flex_tab
+}
+```
+
+
+```{r, results ='asis', echo=FALSE}
+flextables <- lapply(sfr_cat_cols, cat_flextable)
+
+for (x in 1:length(sfr_cat_cols)) {
+  cat(knit_print(flextables[[x]]))
+  }
+
+```
+
+## Download Tables in Word File
+
+```{r}
+#| include: false
+
+# Define title and subtitle styles
+title_style <- fp_text_lite(font.size = 18, bold = TRUE)
+subtitle_style <- fp_text_lite(font.size = 14, bold = TRUE, color = "#A7A7A7")
+
+
+#  Create an empty Word document
+sfr_doc <- read_docx()
+
+
+sfr_doc <- sfr_doc %>%
+  
+  # Add Headings
+  body_add_fpar(fpar(ftext("Self Report Tables", prop = title_style))) %>%
+  body_add_par("") %>%
+  body_add_fpar(fpar(ftext("Continuous Variables", prop = subtitle_style))) %>%
+  body_add_par("") %>%
+  
+  # Add continuous variable tables to Word document
+  body_add_flextable(width(cont_desc, width = 3.4, unit = "in"), align = "left") %>%
+  body_add_par("") %>%
+  body_add_flextable(width(cont_flextable, width = 2.27, unit = "in"), align = "left") %>%
+  body_add_par("") %>%
+  
+  # Add Heading
+  body_add_fpar(fpar(ftext("Categorical Variables", prop = subtitle_style))) 
+
+# Add categorical variable tables into Word document
+for (var_name in sfr_cat_cols) {
+  cat_flex <- cat_flextable(var_name)
+  # Set width of tables
+  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  # Prevent table breaking up into different pages.
+  paginate(init = TRUE, hdr_ftr = TRUE)
+  # Align tables and add a separating empty line between each table    
+  sfr_doc <- sfr_doc %>%
+    body_add_flextable(cat_flex, align = "left") %>%
+    body_add_par("")
+    
+}
+  
+
+# print the word document
+print(sfr_doc, target = "../sections/self_report_tables.docx")
+```
+
+
+```{r}
+#| label: download_docx
+#| echo: false
+
+downloadthis::download_file(
+  path = "self_report_tables.docx",
+  output_name = "Self Report Tables",
+  button_label = "Download table",
+  button_type = "success",
+  has_icon = TRUE,
+  icon = "fa fa-save"
+)
+```
+
+
+
+
+
