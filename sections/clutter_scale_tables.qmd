@@ -128,19 +128,28 @@ cat_flextable <- function(var_name, table_list = cls_table_list) {
         "n" = "N",
         "formatted_stats" = "Percent of N (95% CI)") %>%
       
-      # Shade alternating rows using zebra theme
-      theme_zebra() %>%
-      
       # Format Header lines
       add_header_lines(desc_cap) %>%
       add_header_lines(title_cap) %>%
       bg(bg = "transparent", part = "header", i = c(1,2)) %>%
-      bold(i = 2, bold = FALSE, part = "header") %>%
       align(align = "left", part = "header") %>%
+      
+      # Shade alternating rows using zebra theme
+      theme_zebra(
+        odd_header = "transparent",
+        odd_body = "transparent",
+        even_header = "transparent",
+        even_body = "#f1f1f1"
+      ) %>%
+      
+      # Add border lines to header and format header
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
       width(width = 4.8, unit = 'in') %>%
       align(align = "left") %>%
+      # Add space for website view
       add_footer_lines("")
     
     flex_tab
@@ -182,8 +191,10 @@ for (var_name in cls_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
   cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
-  # Prevent table breaking up into different pages.
-  paginate(init = TRUE, hdr_ftr = TRUE)
+    # Remove space for document view
+    delete_part(part = "footer") %>%
+    # Prevent table breaking up into different pages.
+    paginate(init = TRUE, hdr_ftr = TRUE)
   # Align tables and add a separating empty line between each table    
   cls_doc <- cls_doc %>%
     body_add_flextable(cat_flex, align = "left") %>%

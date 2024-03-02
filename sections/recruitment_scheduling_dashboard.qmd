@@ -10,8 +10,6 @@ library(dplyr)
 library(ggplot2)
 library(flextable)
 library(officer)
-library(ggiraph)
-library(plotly)
 
 # Import the data that will be used to create the tables.
 detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")

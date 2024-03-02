@@ -3,7 +3,9 @@
 # - The proportion of positive votes
 # - Whether there are any positive votes for each type of abuse for each assessment.
 # - Whether there are any positive votes across all subtypes of abuse for each assessment.
-# - The final LEAD Assessment determination based on majority vote for each assessment.
+# - The LEAD Assessment determination based on majority vote for each assessment.
+# - The final LEAD Assessment determination - the result of the majority vote of the secondary assessment (if one was done) or initial assessment 
+# (if a secondary assessment wasn't done).
 
 ## Create summary dataframes for each assessment within the LEAD panel assessment data that include calculated columns indicating the total number of 
 ## positive votes, the proportion of positive votes, whether or not there were any positive determinations at each assessment for each MedStar ID.
@@ -66,8 +68,8 @@ pos_votes <- function(lead_panel_cleaned) {
     ) %>%
     ungroup()
   
-  # Create columns that indicate the final LEAD Assessment determination based on majority vote. 
-  final_det <- any_pos %>% 
+  # Create columns that indicate the LEAD Assessment determination based on majority vote. 
+  maj_det <- any_pos %>% 
     group_by(assessment_type_3cat_f) %>%
     mutate(
       across(
@@ -94,7 +96,7 @@ pos_votes <- function(lead_panel_cleaned) {
 
     # Create a dichotomous variable that indicates if there were _any_ positive determinations at each assessment (initial, secondary, and post-DETECT) 
     # across _all_ subtypes of EM.
-    abuse_any <- final_det %>%
+    abuse_any <- maj_det %>%
       group_by(assessment_type_3cat_f) %>%
       mutate(
         abuse_any = case_when(
@@ -111,5 +113,14 @@ pos_votes <- function(lead_panel_cleaned) {
         )
       ) %>%
       ungroup()
-    abuse_any
+    # Create a data frame with only the data used for the final abuse determination, merge it with the abuse_any data frame and create a column that 
+    # distinguishes the rows in the original final abuse data set from the rest
+    initial_pos_votes <- abuse_any %>% filter(assessment_type_3cat_f == "Initial assessment")
+    secondary_pos_votes <- abuse_any %>% filter(assessment_type_3cat_f == "Secondary assessment")
+    final_det <- initial_pos_votes[!initial_pos_votes$medstar_id %in% secondary_pos_votes$medstar_id,]
+    final_det <- rbind(final_det, secondary_pos_votes)
+    final_det <- bind_rows(list( "0" = abuse_any, "1" = final_det), .id = "final_determination") %>% 
+      mutate(final_determination = factor(final_determination))
+    
+    final_det
 }
