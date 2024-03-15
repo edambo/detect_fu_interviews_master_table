@@ -175,7 +175,7 @@ cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "descript
   
   # Set table width and alignment
   width(width = 4.8, unit = 'in') %>%
-  align(align = "left") 
+  align(align = "left", part = "all") 
   
 cont_flextable
 ```
@@ -220,8 +220,8 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
-      width(width = 4.8, unit = 'in') %>%
-      align(align = "left") %>%
+      width(j = c(1,2,3,4), width = c(2.4, 2.6, 1, 2), unit = "in") %>%
+      align(align = "left", part = "all") %>%
       # add space for website view
       add_footer_lines("")
     
@@ -242,7 +242,7 @@ for (x in 1:length(socio_demo_cat_cols)) {
 ## Download Tables in Word File
 
 ```{r}
-#| include : false
+#| include: false
 
 # Define title and subtitle styles
 title_style <- fp_text_lite(font.size = 18, bold = TRUE)

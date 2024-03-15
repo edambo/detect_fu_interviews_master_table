@@ -104,6 +104,7 @@ obs_table_list <- split(obs_table, obs_table$var)
 
 ## Tables
 
+### Categorical Variables
 ```{r, include = FALSE}
 cat_flextable <- function(var_name, table_list = obs_table_list) {
   # Extract each variable data frame from list 
@@ -141,8 +142,8 @@ cat_flextable <- function(var_name, table_list = obs_table_list) {
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
-      width(width = 4.8, unit = 'in') %>%
-      align(align = "left") %>%
+      width(j = c(1,2,3,4), width = c(2.4, 2.6, 1, 2), unit = "in") %>%
+      align(align = "left", part = "all") %>%
       # Add space for website view
       add_footer_lines("")
     
@@ -159,6 +160,43 @@ for (x in 1:length(obs_cols)) {
   }
 
 ```
+
+
+<!-- ## Create table containing descriptions for short answer variables.-->
+
+### Free Text Variables
+
+These variables contain free text response data that is not analyzed on this site.
+
+```{r, include = FALSE}
+free_res <- obs_desc %>% filter(grepl("_comments$", name) | grepl("at_.+_why", name)) 
+```
+
+```{r, echo = FALSE}
+free_res_flex <- flextable(free_res) %>%
+  # Rename columns
+  set_header_labels(
+    name = "Variable",
+    description = "Description") %>%
+  
+  # Shade alternating rows using zebra theme
+  theme_zebra(
+    odd_header = "transparent",
+    odd_body = "#f1f1f1",
+    even_header = "transparent",
+    even_body = "transparent"
+  ) %>%
+  
+  # Set header alignment
+  align(align = "left", part = "header") %>%
+  
+  # Set table width and alignment
+  width(j = c(1,2), width = c(2,7), unit = 'in') %>%
+  align(align = "left") 
+
+free_res_flex
+```
+
 
 ## Download Tables in Word File
 
@@ -181,10 +219,16 @@ obs_doc <- obs_doc %>%
   body_add_par("")
 
 # Add categorical variable tables into Word document
+obs_doc <- obs_doc %>%
+  
+  # Add Headings
+  body_add_fpar(fpar(ftext("Categorical Variables", prop = subtitle_style))) %>%
+  body_add_par("") 
+
 for (var_name in obs_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -195,7 +239,15 @@ for (var_name in obs_cols) {
     body_add_par("")
     
 }
+
+obs_doc <- obs_doc %>%
+  body_add_break() %>%
   
+  # Add Headings
+  body_add_fpar(fpar(ftext("Free Text Variables", prop = subtitle_style))) %>%
+  body_add_par("") %>%
+  
+  body_add_flextable(width(free_res_flex, j = c(1,2), width = c(2, 4.7)))
 
 # print the word document
 print(obs_doc, target = "../sections/observational_measures_tables.docx")
