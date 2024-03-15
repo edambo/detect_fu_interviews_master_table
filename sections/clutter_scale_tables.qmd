@@ -147,8 +147,8 @@ cat_flextable <- function(var_name, table_list = cls_table_list) {
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
-      width(width = 4.8, unit = 'in') %>%
-      align(align = "left") %>%
+      width(j = c(1,2,3,4), width = c(2.4, 2.6, 1, 2), unit = "in") %>%
+      align(align = "left", part = "all") %>%
       # Add space for website view
       add_footer_lines("")
     
@@ -190,7 +190,7 @@ cls_doc <- cls_doc %>%
 for (var_name in cls_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.

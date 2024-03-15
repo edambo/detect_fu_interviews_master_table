@@ -162,8 +162,8 @@ cont_flextable <- flextable(sfr_cont_table, col_keys = c("var", "description",  
   align(align = "left", part = "header") %>%
   
   # Set table width and alignment
-  width(width = 4.8, unit = 'in') %>%
-  align(align = "left") 
+  width(j = c(1,2,3,4), width = c(2, 3.6, 1, 2), unit = 'in') %>%
+  align(align = "left", part = "all") 
   
 cont_flextable
 ```
@@ -209,8 +209,8 @@ cat_flextable <- function(var_name, table_list = sfr_cat_table_list) {
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
-      width(width = 4.8, unit = 'in') %>%
-      align(align = "left") %>%
+      width(j = c(1,2,3,4), width = c(3, 2.6, 1, 2), unit = "in") %>%
+      align(align = "left", part = "all") %>%
       # add space for website view
       add_footer_lines("")
     
