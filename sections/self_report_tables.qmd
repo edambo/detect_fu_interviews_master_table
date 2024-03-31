@@ -251,7 +251,7 @@ sfr_doc <- sfr_doc %>%
   body_add_par("") %>%
   
   # Add continuous variable tables to Word document
-  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), width = c(1.7, 2.7, 0.7, 1.7), unit = "in"), align = "left") %>%
+  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in"), align = "left") %>%
   body_add_par("") %>%
   body_add_break(pos = "after") %>%
   
