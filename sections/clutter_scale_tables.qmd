@@ -15,47 +15,24 @@ library(freqtables)
 library(flextable)
 library(officer)
 library(knitr)
-
+library(here)
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+cls_path <- here::here("data", "cleaned_rds_files", "clutter_scale_import.rds")
+cls <- readRDS(cls_path)
 
-# Import dataframe containing description of variables
-cls_desc <- readRDS("../sections/variable_descriptions/clutter_scale_var_desc.rds")
+# Import data frame containing description of variables
+cls_desc_path <- here::here("sections", "variable_descriptions", "clutter_scale_var_desc.rds")
+cls_desc <- readRDS(cls_desc_path)
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
-source("../R/n_mean_ci.R")
-source("../R/n_median_ci.R")
-source("../R/cont_stats.R")
+source(here::here("R", "n_mean_ci.R"))
+source(here::here("R", "n_median_ci.R"))
+source(here::here("R", "cont_stats.R"))
 
 # Overall - Categorical columns
-source("../R/n_percent_ci.R")
-
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
-
-# By group - Categorical columns
-source("../R/n_percent_ci_grouped.R")
-
-# Import function that will filter out the df from the merged df
-source("../R/extract_df_from_merged_detect.R")
-```
-
-<!-- ## Create a data set with only the first visit for each unique person -->
-
-```{r}
-#| echo: false
-# Extract the relevant df from the merged data frame
-cls <- filter_merged_df(detect_fu_merge, "_cls")
-
-# List of dfs of unique people and whether they were visited one or multiple times 
-# cls_unique_list <- unique_people(cls_filter)
-
-# Extract df containing only the first visits for each participant
-# cls <- cls_unique_list$df_first_visit_only
+source(here::here("R", "n_percent_ci.R"))
 ```
 
 <!-- ## Create lists of columns to analyze -->
@@ -204,7 +181,7 @@ for (var_name in cls_cols) {
   
 
 # print the word document
-print(cls_doc, target = "../sections/clutter_scale_tables.docx")
+print(cls_doc, target = here::here("sections", "clutter_scale_tables.docx"))
 ```
 
 

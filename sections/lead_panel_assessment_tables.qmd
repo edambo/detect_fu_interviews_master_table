@@ -28,40 +28,31 @@ library(haven)
 library(freqtables)
 library(flextable)
 library(officer)
-library(tibble)
-library(officer)
-library(readr)
 library(purrr)
 library(stringr)
-library(lubridate)
-library(ggplot2)
-library(dplyr, warn.conflicts = FALSE)
+library(tidyverse, warn.conflicts = FALSE)
 library(knitr)
-library(tidyverse)
+library(here)
 
 
-
-# Import function that will be used to add shade to the table by variable name
-source("../R/add_shade_column.R")
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+lpa_path <- here::here("data", "cleaned_rds_files", "lead_panel_assessment_import.rds")
+lpa <- readRDS(lpa_path)
 
-# Import functions that will be used to calculate statistics
+par_path <- here::here("data", "cleaned_rds_files", "participant_import.rds")
+par <- readRDS(par_path)
 
-# Function specific to LEAD Panel Assessment Data
-source("../R/lead_positive_votes_analysis.R")
+# Import functions
 
-# Generate unique person datasets and summary table
-source("../R/unique_case_count.R")
+# Function used for analyzing the LEAD Panel Assessment positive vote count
+source(here::here("R", "lead_positive_votes_analysis.R"))
 
-# Filter out the lead panel df from the merged df
-source("../R/extract_df_from_merged_detect.R")
+# Function for creating a formatted confusion matrix
+source(here::here("R", "lead_determination_vs_detect_tool_confusion_matrix_by_abuse_type.R"))
 
-# Generate the data frame that will be used for creating a confusion matrix
-source("../R/final_abuse_determination_initial_abuse_detect_tool.R")
-
-
+# Function used for counting unique cases
+source(here::here("R", "unique_case_count.R"))
 
 # Overall - Continuous columns
 source("../R/n_mean_ci.R")
@@ -69,15 +60,10 @@ source("../R/n_median_ci.R")
 source("../R/cont_stats.R")
 
 # Overall - Categorical columns
-source("../R/n_percent_ci.R")
-
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
-
-# By group - Categorical columns
 source("../R/n_percent_ci_grouped.R")
+
+# Grouped - Categorical coluns
+source(here::here("R", "n_percent_ci.R"))
 ```
 
 <!-- # Analysis -->
@@ -111,11 +97,8 @@ lead_desc <- tribble(
 ## Summary Statistics for LEAD Panel Assessment Positive Votes
 ```{r}
 #| echo: false
-# Extract lead Panel data from merged data frame
-lpa <- filter_merged_df(detect_fu_merge, "_lpa")
-
-# Extract detect tool data from merged dataframe
-detect_tool <- filter_merged_df(detect_fu_merge, "_par") %>% select(c(medstar_id, ends_with("_5cat_f")))
+# Extract detect tool data from participant data
+detect_tool <- par %>% select(c(medstar_id, ends_with("_5cat_f")))
 ```
 
 ```{r}
@@ -135,45 +118,15 @@ The DETECT tool determination was counted as positive if the value of any of the
 ```{r, echo = FALSE}
 # Create confusion matrix flextable
 
-lead_tool <- compare_det(final_det, detect_tool)
-
-# Format the flextable
-conf_mat <- lead_tool[[1]] %>% 
-  border_remove() %>%
-  bg(part = "body", i = 1, j = 2, bg = "#8cc0ae") %>%
-  bg(part = "body", i = 2, j = 3, bg = "#8cc0ae") %>%
-  bg(part = "body", i = 2, j = 2, bg = "#9dcfbc") %>%
-  bg(part = "body", i = 1, j = 3, bg = "#9dcfbc") %>%
-  color(j = c(2,3), i = c(1,2), color = "white") %>%
-  bold(j = 1, part = "header") %>%
-  bold(i = 1, j = 2, part = "header") %>%  
-  bold(i = c(1,2), j = c(2,3)) %>%
-  height(i = c(1,2), height = 1.5, unit = "in") %>%
-  hrule(rule = "exact") %>%
-  width(j = -c(1,4), width = 1.5, unit = "in") %>%
-  align(align = "center") %>%
-  align(j = 1, align = "right") %>%
-  valign(valign = c("center")) %>%
-  vline(j = 3, border = fp_border(color = "black")) %>%
-  hline(i = 2, border = fp_border(color = "black")) %>%
-  flextable::compose(j = 1, value = as_paragraph("Detect Tool"), part = "header") %>%
-  flextable::compose(i = 1, j = 2, value = as_paragraph("LEAD Panel Assessment"), part = "header") 
-
+lead_tool <- compare_det(final_det, detect_tool, abuse_any)
+conf_mat <- lead_tool[[1]]
 conf_mat
 ```
 
 
 ```{r, echo = FALSE, ft.align="left"}
 
-conf_calc <- lead_tool[[2]] %>% t() %>% as.data.frame() %>% rownames_to_column() %>% 
-  flextable() %>%
-  delete_part(part = "header") %>%
-  hline_top() %>%
-  hline_bottom() %>%
-  bold(j = 1) %>%
-  width(width = 1, unit = "in")
- 
-
+conf_calc <- lead_tool[[2]]
 conf_calc
 ```
 
@@ -631,11 +584,9 @@ for (var_name in any_pos_cols) {
     body_add_par("")
     
 }
-  
-  
 
 # print the word document
-print(lead_doc, target = "lead_overall.docx")
+print(lead_doc, target = here::here("sections", "lead_overall.docx"))
 ```
 
 

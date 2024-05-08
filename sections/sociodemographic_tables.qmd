@@ -16,47 +16,42 @@ library(freqtables)
 library(flextable)
 library(officer)
 library(knitr)
+library(here)
 
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+soc_dem_path <- here::here("data", "cleaned_rds_files", "sociodemographic_information_import.rds")
+soc_dem <- readRDS(soc_dem_path)
 
-# Import dataframe containing description of variables
-soc_dem_desc <- readRDS("../sections/variable_descriptions/sociodemographic_information_var_desc.rds")
+# Import data frame containing description of variables
+soc_dem_desc_path <- here::here("sections", "variable_descriptions", "sociodemographic_information_var_desc.rds")
+soc_dem_desc <- readRDS(soc_dem_desc_path)
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
-source("../R/n_mean_ci.R")
-source("../R/n_median_ci.R")
-source("../R/cont_stats.R")
+source(here::here("R", "n_mean_ci.R"))
+source(here::here("R", "n_median_ci.R"))
+source(here::here("R", "cont_stats.R"))
 
 # Overall - Categorical columns
-source("../R/n_percent_ci.R")
-
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
-
-# By group - Categorical columns
-source("../R/n_percent_ci_grouped.R")
-
-# Import function that will filter out the sociodemographic information df from the merged df
-source("../R/extract_df_from_merged_detect.R")
+source(here::here("R", "n_percent_ci.R"))
+  
+# Import function that will merge unique ID to data set
+source(here::here("R", "merge_unique_id_to_detect_data_set.R"))  
 
 # Import function that will create a data set with only the first visit for each unique person
-source("../R/unique_people.R")
+source(here::here("R", "unique_people.R"))
 ```
 
 <!-- ## Create a data set with only the first visit for each unique person -->
 
 ```{r}
 #| echo: false
-# Extract the sociodemographic df from the merged data frame
-socio_demo_filter <- filter_merged_df(detect_fu_merge, "_soc")
+# Merge unique ID to sociodemographic information data set
+soc_dem <- merge_id(soc_dem)
 
 # List of dfs of unique people and whether they were visited one or multiple times 
-socio_demo_unique_list <- unique_people(socio_demo_filter)
+socio_demo_unique_list <- unique_people(soc_dem)
 
 # Extract df containing only the first visits for each participant
 socio_demo <- socio_demo_unique_list$df_first_visit_only
@@ -142,15 +137,13 @@ socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$va
 
 ```
 
-
 <!-- ## Create Flextables -->
 
 ## Continuous Variable Table
 
 ```{r, echo = FALSE}
 # Create flextable
-
-cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "description", "n", "formatted_stats")) %>%
+cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "description",  "n", "formatted_stats")) %>%
   # Rename columns
   set_header_labels(
     var = "Variable",
@@ -174,7 +167,7 @@ cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "descript
   align(align = "left", part = "header") %>%
   
   # Set table width and alignment
-  width(width = 4.8, unit = 'in') %>%
+  width(j = c(1,2,3,4), width = c(2, 3.6, 1, 2), unit = 'in') %>%
   align(align = "left", part = "all") 
   
 cont_flextable
@@ -191,7 +184,7 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
   desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
-  
+    
     # Create flextable
     flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
       # Rename columns
@@ -222,7 +215,7 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
       # Set width and alignment
       width(j = c(1,2,3,4), width = c(2.4, 2.6, 1, 2), unit = "in") %>%
       align(align = "left", part = "all") %>%
-      # add space for website view
+      # Add space for website view
       add_footer_lines("")
     
     flex_tab
@@ -273,7 +266,7 @@ soc_doc <- soc_doc %>%
 for (var_name in socio_demo_cat_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -288,7 +281,7 @@ for (var_name in socio_demo_cat_cols) {
   
 
 # print the word document
-print(soc_doc, target = "../sections/sociodemographic_information_tables.docx")
+print(soc_doc, target = here::here("sections", "sociodemographic_information_tables.docx"))
 ```
 
 ```{r}
