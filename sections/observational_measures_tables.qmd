@@ -14,42 +14,24 @@ library(freqtables)
 library(flextable)
 library(officer)
 library(knitr)
-
+library(here)
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+obs_path <- here::here("data", "cleaned_rds_files", "observational_measures_import.rds")
+obs <- readRDS(obs_path)
 
-# Import dataframe containing description of variables
-obs_desc <- readRDS("../sections/variable_descriptions/observational_measures_var_desc.rds")
+# Import data frame containing description of variables
+obs_desc_path <- here::here("sections", "variable_descriptions", "observational_measures_var_desc.rds")
+obs_desc <- readRDS(obs_desc_path)
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
-source("../R/n_mean_ci.R")
-source("../R/n_median_ci.R")
-source("../R/cont_stats.R")
+source(here::here("R", "n_mean_ci.R"))
+source(here::here("R", "n_median_ci.R"))
+source(here::here("R", "cont_stats.R"))
 
 # Overall - Categorical columns
-source("../R/n_percent_ci.R")
-
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
-
-# By group - Categorical columns
-source("../R/n_percent_ci_grouped.R")
-
-# Import function that will filter out the df from the merged df
-source("../R/extract_df_from_merged_detect.R")
-```
-
-<!-- ## Create a data set with only the first visit for each unique person -->
-
-```{r}
-#| echo: false
-# Extract the relevant df from the merged data frame
-obs <- filter_merged_df(detect_fu_merge, "_obs")
-
+source(here::here("R", "n_percent_ci.R"))
 ```
 
 <!-- ## Create lists of columns to analyze -->

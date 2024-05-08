@@ -10,46 +10,36 @@ library(dplyr)
 library(ggplot2)
 library(flextable)
 library(officer)
+library(here)
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+soc_demo_path <- here::here("data", "cleaned_rds_files", "sociodemographic_information_import.rds")
+soc_demo <- readRDS(soc_demo_path)
 
-# Import functions that will be used to calculate statistics
-# Overall - Continuous columns
-source("../R/n_mean_ci.R")
-source("../R/n_median_ci.R")
-source("../R/cont_stats.R")
+participant_path <- here::here("data", "cleaned_rds_files", "participant_import.rds")
+participant <- readRDS(participant_path)
 
-# Overall - Categorical columns
-source("../R/n_percent_ci.R")
+consent_path <- here::here("data", "cleaned_rds_files", "consent_import.rds")
+consent <- readRDS(consent_path)
 
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
+# Import function that will merge unique ID to data set
+source(here::here("R", "merge_unique_id_to_detect_data_set.R"))  
 
-# By group - Categorical columns
-source("../R/n_percent_ci_grouped.R")
-
-# Import function that will filter out specific dataframes from the merged df
-source("../R/extract_df_from_merged_detect.R")
-
-# Import function that will create summary data sets of unique people and create a data set with only the first visit for each unique person
-source("../R/unique_people.R")
 ```
 
-<!-- ## Extract needed datasets from merged dataframe -->
+<!-- ## Add unique ID column to data sets -->
 ```{r}
 #| echo: false
 
 # Participant 
-participant <- filter_merged_df(detect_fu_merge, "_par")
+participant <- merge_id(participant)
 
 # Sociodemographic Information
-socio_demo <- filter_merged_df(detect_fu_merge, "_soc")
+soc_demo <- merge_id(soc_demo)
 
+# Consent
+consent <- merge_id(consent)
 ```
-
 
 <!-- ## The number of follow-up interviews completed.-->
 ## Column {width="25%" .fill}
@@ -63,7 +53,7 @@ socio_demo <- filter_merged_df(detect_fu_merge, "_soc")
 # (Based on the code in the "check_consenting participants file, only MedStar IDs with consent should be counted whether or not they are in the consent dataset.)
 
 # Identify participants that gave consent
-consented <- detect_fu_merge %>% filter(consent_given_con == 1) %>% select(medstar_id) %>% unique() %>% nrow()
+consented <- consent %>% filter(consent_given == 1) %>% select(medstar_id) %>% unique() %>% nrow()
 
 list(
   icon = "check2-circle",
@@ -77,7 +67,7 @@ list(
 #| title: Unique Participants
 #| content: valuebox
 
-unique <- detect_fu_merge %>% filter(consent_given_con == 1) %>% select(unique_id_par) %>% unique() %>% nrow()
+unique <- consent %>% filter(consent_given == 1) %>% select(unique_id) %>% unique() %>% nrow()
 
 list(
   icon = "person",
@@ -88,16 +78,16 @@ list(
 ## Column {width="75%" .fill}
 ```{r}
 #| include: false
-visits <- detect_fu_merge %>% 
-  filter(consent_given_con == 1) %>%
-  select(unique_id_par, medstar_id) %>% unique() %>%
-  group_by(unique_id_par) %>%
+visits <- consent %>% 
+  filter(consent_given == 1) %>%
+  select(unique_id, medstar_id) %>% unique() %>%
+  group_by(unique_id) %>%
   mutate(
     # Column that gives count of rows for each unique_id
     visit_count = n()
   ) %>%
   ungroup() %>%
-  select(unique_id_par, visit_count) %>%
+  select(unique_id, visit_count) %>%
   unique() %>% 
   group_by(visit_count) %>%
   reframe(

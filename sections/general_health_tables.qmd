@@ -15,44 +15,37 @@ library(freqtables)
 library(flextable)
 library(officer)
 library(knitr)
-
+library(here)
 
 # Import the data that will be used to create the tables.
-detect_fu_merge  <- readRDS("../data/cleaned_rds_files/detect_fu_data_merged.rds")
+glh_path <- here::here("data", "cleaned_rds_files", "general_health_import.rds")
+glh <- readRDS(glh_path)
 
-# Import dataframe containing description of variables
-glh_desc <- readRDS("../sections/variable_descriptions/general_health_var_desc.rds")
+# Import data frame containing description of variables
+glh_desc_path <- here::here("sections", "variable_descriptions", "general_health_var_desc.rds")
+glh_desc <- readRDS(glh_desc_path)
 
 # Import functions that will be used to calculate statistics
 # Overall - Continuous columns
-source("../R/n_mean_ci.R")
-source("../R/n_median_ci.R")
-source("../R/cont_stats.R")
+source(here::here("R", "n_mean_ci.R"))
+source(here::here("R", "n_median_ci.R"))
+source(here::here("R", "cont_stats.R"))
 
 # Overall - Categorical columns
-source("../R/n_percent_ci.R")
+source(here::here("R", "n_percent_ci.R"))
 
-# By group - Continuous columns
-source("../R/n_mean_ci_grouped.R")
-source("../R/n_median_ci_grouped.R")
-source("../R/cont_stats_grouped.R")
-
-# By group - Categorical columns
-source("../R/n_percent_ci_grouped.R")
-
-# Import function that will filter out the df from the merged df
-source("../R/extract_df_from_merged_detect.R")
+# Import function that will merge unique ID to data set
+source(here::here("R", "merge_unique_id_to_detect_data_set.R")) 
 
 # Import function that will create a data set with only the first visit for each unique person
-source("../R/unique_people.R")
+source(here::here("R", "unique_people.R"))
 ```
 
 <!-- ## Create a data set with only the first visit for each unique person -->
 
 ```{r}
 #| echo: false
-# Extract the general health df from the merged data frame
-glh <- filter_merged_df(detect_fu_merge, "_glh")
+glh <- merge_id(glh)
 
 # List of dfs of unique people and whether they were visited one or multiple times 
 glh_unique_list <- unique_people(glh)
