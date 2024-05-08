@@ -137,14 +137,13 @@ socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$va
 
 ```
 
-
 <!-- ## Create Flextables -->
 
 ## Continuous Variable Table
 
 ```{r, echo = FALSE}
 # Create flextable
-cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "description", "n", "formatted_stats")) %>%
+cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "description",  "n", "formatted_stats")) %>%
   # Rename columns
   set_header_labels(
     var = "Variable",
@@ -153,14 +152,23 @@ cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "descript
     "formatted_stats" = "Mean of N (95% CI)") %>%
   
   # Shade alternating rows using zebra theme
-  theme_zebra() %>%
+  theme_zebra(
+    odd_header = "transparent",
+    odd_body = "transparent",
+    even_header = "transparent",
+    even_body = "#f1f1f1"
+  ) %>%
+  
+  # Add border lines to header and format header
+  border(i = 1, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+  bold(i = 1, part = "header", bold = FALSE) %>%
   
   # Set header alignment
   align(align = "left", part = "header") %>%
   
   # Set table width and alignment
-  width(width = 4.8, unit = 'in') %>%
-  align(align = "left") 
+  width(j = c(1,2,3,4), width = c(2, 3.6, 1, 2), unit = 'in') %>%
+  align(align = "left", part = "all") 
   
 cont_flextable
 ```
@@ -186,20 +194,28 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
         "n" = "N",
         "formatted_stats" = "Percent of N (95% CI)") %>%
       
-      # Shade alternating rows using zebra theme
-      theme_zebra() %>%
-      
       # Format Header lines
       add_header_lines(desc_cap) %>%
       add_header_lines(title_cap) %>%
       bg(bg = "transparent", part = "header", i = c(1,2)) %>%
-      bold(i = 2, bold = FALSE, part = "header") %>%
       align(align = "left", part = "header") %>%
       
+      # Shade alternating rows using zebra theme
+      theme_zebra(
+        odd_header = "transparent",
+        odd_body = "transparent",
+        even_header = "transparent",
+        even_body = "#f1f1f1"
+      ) %>%
+      
+      # Add border lines to header and format header
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      bold(i = c(2,3), part = "header", bold = FALSE) %>%
+      
       # Set width and alignment
-      width(width = 4.8, unit = 'in') %>%
-      align(align = "left") %>%
-      # add space for website view
+      width(j = c(1,2,3,4), width = c(2.4, 2.6, 1, 2), unit = "in") %>%
+      align(align = "left", part = "all") %>%
+      # Add space for website view
       add_footer_lines("")
     
     flex_tab
@@ -219,7 +235,7 @@ for (x in 1:length(socio_demo_cat_cols)) {
 ## Download Tables in Word File
 
 ```{r}
-#| include : false
+#| include: false
 
 # Define title and subtitle styles
 title_style <- fp_text_lite(font.size = 18, bold = TRUE)
@@ -250,7 +266,7 @@ soc_doc <- soc_doc %>%
 for (var_name in socio_demo_cat_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -265,7 +281,7 @@ for (var_name in socio_demo_cat_cols) {
   
 
 # print the word document
-print(soc_doc, target = "../sections/sociodemographic_information_tables.docx")
+print(soc_doc, target = here::here("sections", "sociodemographic_information_tables.docx"))
 ```
 
 ```{r}

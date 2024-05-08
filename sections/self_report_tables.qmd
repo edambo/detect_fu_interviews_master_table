@@ -246,7 +246,7 @@ sfr_doc <- sfr_doc %>%
 for (var_name in sfr_cat_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(width = 1.7, unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -260,9 +260,8 @@ for (var_name in sfr_cat_cols) {
   
 
 # print the word document
-print(sfr_doc, target = "../sections/self_report_tables.docx")
+print(sfr_doc, target = here::here("sections", "self_report_tables.docx"))
 ```
-
 
 ```{r}
 #| label: download_docx

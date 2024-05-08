@@ -185,7 +185,7 @@ for (var_name in aps_cols) {
   
 
 # print the word document
-print(aps_doc, target = "../sections/aps_investigations_tables.docx")
+print(aps_doc, target = here::here("sections", "aps_investigations_tables.docx"))
 ```
 
 

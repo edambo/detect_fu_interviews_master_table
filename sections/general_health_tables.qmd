@@ -200,7 +200,7 @@ for (var_name in glh_cols) {
   
 
 # print the word document
-print(glh_doc, target = "../sections/general_health_tables.docx")
+print(glh_doc, target = here::here("sections", "general_health_tables.docx"))
 ```
 
 

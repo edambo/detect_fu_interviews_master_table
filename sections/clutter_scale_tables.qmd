@@ -181,7 +181,7 @@ for (var_name in cls_cols) {
   
 
 # print the word document
-print(cls_doc, target = "../sections/clutter_scale_tables.docx")
+print(cls_doc, target = here::here("sections", "clutter_scale_tables.docx"))
 ```
 
 

@@ -584,11 +584,9 @@ for (var_name in any_pos_cols) {
     body_add_par("")
     
 }
-  
-  
 
 # print the word document
-print(lead_doc, target = "lead_overall.docx")
+print(lead_doc, target = here::here("sections", "lead_overall.docx"))
 ```
 
 

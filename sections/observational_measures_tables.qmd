@@ -232,7 +232,7 @@ obs_doc <- obs_doc %>%
   body_add_flextable(width(free_res_flex, j = c(1,2), width = c(2, 4.7)))
 
 # print the word document
-print(obs_doc, target = "../sections/observational_measures_tables.docx")
+print(obs_doc, target = here::here("sections", "observational_measures_tables.docx"))
 ```
 
 
