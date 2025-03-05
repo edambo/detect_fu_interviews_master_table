@@ -17,11 +17,13 @@ library(knitr)
 library(here)
 
 # Import the data that will be used to create the tables.
-obs_path <- here::here("data", "cleaned_rds_files", "observational_measures_import.rds")
+obs_path <- here::here("data", "cleaned_rds_files", 
+                       "observational_measures_import.rds")
 obs <- readRDS(obs_path)
 
 # Import data frame containing description of variables
-obs_desc_path <- here::here("sections", "variable_descriptions", "observational_measures_var_desc.rds")
+obs_desc_path <- here::here("data", "variable_descriptions", 
+                            "observational_measures_var_desc.rds")
 obs_desc <- readRDS(obs_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -40,7 +42,8 @@ source(here::here("R", "n_percent_ci.R"))
 #| echo: false
 # Create list of the names of the factor columns
 
-obs_cols <- obs %>% select(ends_with("_f")) %>% select(order(colnames(.))) %>% names()
+obs_cols <- obs %>% select(ends_with("_f")) %>% select(order(colnames(.))) %>% 
+  names()
 ```
 
 
@@ -94,10 +97,12 @@ cat_flextable <- function(var_name, table_list = obs_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")
+                          ) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -120,7 +125,8 @@ cat_flextable <- function(var_name, table_list = obs_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
@@ -151,7 +157,8 @@ for (x in 1:length(obs_cols)) {
 These variables contain free text response data that is not analyzed on this site.
 
 ```{r, include = FALSE}
-free_res <- obs_desc %>% filter(grepl("_comments$", name) | grepl("at_.+_why", name)) 
+free_res <- obs_desc %>% filter(grepl("_comments$", name) | 
+                                  grepl("at_.+_why", name)) 
 ```
 
 ```{r, echo = FALSE}
@@ -210,7 +217,8 @@ obs_doc <- obs_doc %>%
 for (var_name in obs_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -232,7 +240,8 @@ obs_doc <- obs_doc %>%
   body_add_flextable(width(free_res_flex, j = c(1,2), width = c(2, 4.7)))
 
 # print the word document
-print(obs_doc, target = here::here("sections", "observational_measures_tables.docx"))
+print(obs_doc, target = here::here("sections", 
+                                   "observational_measures_tables.docx"))
 ```
 
 

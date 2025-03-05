@@ -22,7 +22,8 @@ cls_path <- here::here("data", "cleaned_rds_files", "clutter_scale_import.rds")
 cls <- readRDS(cls_path)
 
 # Import data frame containing description of variables
-cls_desc_path <- here::here("sections", "variable_descriptions", "clutter_scale_var_desc.rds")
+cls_desc_path <- here::here("data", "variable_descriptions", 
+                            "clutter_scale_var_desc.rds")
 cls_desc <- readRDS(cls_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -41,7 +42,8 @@ source(here::here("R", "n_percent_ci.R"))
 #| echo: false
 # Create list of the names of the factor columns
 
-cls_cols <- cls %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+cls_cols <- cls %>% select(ends_with("cat_f")) %>% 
+  select(order(colnames(.))) %>% names()
 ```
 
 
@@ -94,10 +96,12 @@ cat_flextable <- function(var_name, table_list = cls_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")
+                          ) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -120,7 +124,8 @@ cat_flextable <- function(var_name, table_list = cls_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
@@ -167,7 +172,8 @@ cls_doc <- cls_doc %>%
 for (var_name in cls_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 1.7, 0.8, 2), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.

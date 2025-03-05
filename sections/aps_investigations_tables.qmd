@@ -17,11 +17,13 @@ library(knitr)
 library(here)
 
 # Import the data that will be used to create the tables.
-aps_path <- here::here("data", "cleaned_rds_files", "aps_investigations_import.rds")
+aps_path <- here::here("data", "cleaned_rds_files", 
+                       "aps_investigations_import.rds")
 aps <- readRDS(aps_path)
 
 # Import data frame containing description of variables
-aps_desc_path <- here::here("sections", "variable_descriptions", "aps_investigations_var_desc.rds")
+aps_desc_path <- here::here("data", "variable_descriptions", 
+                            "aps_investigations_var_desc.rds")
 aps_desc <- readRDS(aps_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -40,7 +42,9 @@ source(here::here("R", "n_percent_ci.R"))
 #| echo: false
 # Create list of the names of the factor columns
 
-aps_cols <- aps %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+aps_cols <- aps %>% select(ends_with("cat_f")) %>% 
+  select(order(colnames(.))) %>% 
+  names()
 ```
 
 
@@ -93,10 +97,12 @@ cat_flextable <- function(var_name, table_list = aps_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")
+                          ) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -119,7 +125,8 @@ cat_flextable <- function(var_name, table_list = aps_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Format Header lines
@@ -171,7 +178,8 @@ aps_doc <- aps_doc %>%
 for (var_name in aps_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 2.3, 0.8, 1.4), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.3, 2.3, 0.8, 1.4), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -185,7 +193,8 @@ for (var_name in aps_cols) {
   
 
 # print the word document
-print(aps_doc, target = here::here("sections", "aps_investigations_tables.docx"))
+print(aps_doc, 
+      target = here::here("sections", "aps_investigations_tables.docx"))
 ```
 
 

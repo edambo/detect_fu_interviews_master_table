@@ -22,7 +22,8 @@ sfr_path <- here::here("data", "cleaned_rds_files", "self_report_import.rds")
 sfr <- readRDS(sfr_path)
 
 # Import data frame containing description of variables
-sfr_desc_path <- here::here("sections", "variable_descriptions", "self_report_var_desc.rds")
+sfr_desc_path <- here::here("data", "variable_descriptions", 
+                            "self_report_var_desc.rds")
 sfr_desc <- readRDS(sfr_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -39,13 +40,15 @@ source(here::here("R", "n_percent_ci.R"))
 
 ```{r}
 #| echo: false
-sfr_cat_cols <- sfr %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+sfr_cat_cols <- sfr %>% select(ends_with("cat_f")) %>% 
+  select(order(colnames(.))) %>% names()
 ```
 
 ```{r}
 #| echo: false
 
-sfr_cont_cols <- sfr %>% select(ends_with("years"), ends_with("times")) %>% select(order(colnames(.))) %>% names()
+sfr_cont_cols <- sfr %>% select(ends_with("years"), ends_with("times")) %>% 
+  select(order(colnames(.))) %>% names()
 ```
 
 <!-- ## Create data frames that contains overall summary statistics for categorical and continuous data -->
@@ -121,7 +124,9 @@ sfr_cat_table_list <- split(sfr_cat_table, sfr_cat_table$var)
 
 ```{r, echo = FALSE}
 # Create flextable
-cont_flextable <- flextable(sfr_cont_table, col_keys = c("var", "description",  "n", "formatted_stats")) %>%
+cont_flextable <- flextable(sfr_cont_table, col_keys = 
+                              c("var", "description",  "n", "formatted_stats")
+                            ) %>%
   # Rename columns
   set_header_labels(
     var = "Variable",
@@ -138,7 +143,8 @@ cont_flextable <- flextable(sfr_cont_table, col_keys = c("var", "description",  
   ) %>%
   
   # Add border lines to header and format header
-  border(i = 1, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+  border(i = 1, part = "header", border.top = fp_border(color = "black"), 
+         border.bottom = fp_border(color = "black")) %>%
   bold(i = 1, part = "header", bold = FALSE) %>%
   
   # Set header alignment
@@ -161,10 +167,12 @@ cat_flextable <- function(var_name, table_list = sfr_cat_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")
+                          ) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -188,7 +196,8 @@ cat_flextable <- function(var_name, table_list = sfr_cat_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
@@ -234,7 +243,9 @@ sfr_doc <- sfr_doc %>%
   body_add_par("") %>%
   
   # Add continuous variable tables to Word document
-  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in"), align = "left") %>%
+  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), 
+                           width = c(2, 2.7, 0.7, 1.4), unit = "in"), 
+                     align = "left") %>%
   body_add_par("") %>%
   body_add_break(pos = "after") %>%
   
@@ -246,7 +257,8 @@ sfr_doc <- sfr_doc %>%
 for (var_name in sfr_cat_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.

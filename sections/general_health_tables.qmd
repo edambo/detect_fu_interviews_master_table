@@ -22,7 +22,8 @@ glh_path <- here::here("data", "cleaned_rds_files", "general_health_import.rds")
 glh <- readRDS(glh_path)
 
 # Import data frame containing description of variables
-glh_desc_path <- here::here("sections", "variable_descriptions", "general_health_var_desc.rds")
+glh_desc_path <- here::here("data", "variable_descriptions", 
+                            "general_health_var_desc.rds")
 glh_desc <- readRDS(glh_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -36,9 +37,6 @@ source(here::here("R", "n_percent_ci.R"))
 
 # Import function that will merge unique ID to data set
 source(here::here("R", "merge_unique_id_to_detect_data_set.R")) 
-
-# Import function that will create a data set with only the first visit for each unique person
-source(here::here("R", "unique_people.R"))
 ```
 
 <!-- ## Create a data set with only the first visit for each unique person -->
@@ -47,11 +45,13 @@ source(here::here("R", "unique_people.R"))
 #| echo: false
 glh <- merge_id(glh)
 
-# List of dfs of unique people and whether they were visited one or multiple times 
-glh_unique_list <- unique_people(glh)
-
-# Extract df containing only the first visits for each participant
-glh <- glh_unique_list$df_first_visit_only
+# First visit data for each unique participant
+glh <- glh %>%
+  group_by(unique_id) %>%
+  arrange(as.POSIXct(x_created_timestamp), .by_group = TRUE) %>%
+  mutate(
+    visit_no = row_number()
+  ) %>% filter(visit_no == 1) %>% ungroup()
 ```
 
 <!-- ## Create lists of columns to analyze -->
@@ -60,7 +60,8 @@ glh <- glh_unique_list$df_first_visit_only
 #| echo: false
 # Create list of the names of the factor columns
 
-glh_cols <- glh %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+glh_cols <- glh %>% select(ends_with("cat_f")) %>% 
+  select(order(colnames(.))) %>% names()
 ```
 
 
@@ -113,10 +114,12 @@ cat_flextable <- function(var_name, table_list = glh_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", 
+                                           "formatted_stats")) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -139,7 +142,8 @@ cat_flextable <- function(var_name, table_list = glh_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
@@ -186,7 +190,8 @@ glh_doc <- glh_doc %>%
 for (var_name in glh_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.6, 1.9, 0.8, 1.5), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2.6, 1.9, 0.8, 1.5), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.

@@ -13,10 +13,12 @@ library(officer)
 library(here)
 
 # Import the data that will be used to create the tables.
-soc_demo_path <- here::here("data", "cleaned_rds_files", "sociodemographic_information_import.rds")
+soc_demo_path <- here::here("data", "cleaned_rds_files", 
+                            "sociodemographic_information_import.rds")
 soc_demo <- readRDS(soc_demo_path)
 
-participant_path <- here::here("data", "cleaned_rds_files", "participant_import.rds")
+participant_path <- here::here("data", "cleaned_rds_files", 
+                               "participant_import.rds")
 participant <- readRDS(participant_path)
 
 consent_path <- here::here("data", "cleaned_rds_files", "consent_import.rds")
@@ -53,7 +55,8 @@ consent <- merge_id(consent)
 # (Based on the code in the "check_consenting participants file, only MedStar IDs with consent should be counted whether or not they are in the consent dataset.)
 
 # Identify participants that gave consent
-consented <- consent %>% filter(consent_given == 1) %>% select(medstar_id) %>% unique() %>% nrow()
+consented <- consent %>% filter(consent_given == 1) %>% select(medstar_id) %>% 
+  unique() %>% nrow()
 
 list(
   icon = "check2-circle",
@@ -67,7 +70,8 @@ list(
 #| title: Unique Participants
 #| content: valuebox
 
-unique <- consent %>% filter(consent_given == 1) %>% select(unique_id) %>% unique() %>% nrow()
+unique <- consent %>% filter(consent_given == 1) %>% select(unique_id) %>% 
+  unique() %>% nrow()
 
 list(
   icon = "person",
@@ -93,7 +97,8 @@ visits <- consent %>%
   reframe(
     visit_count,
     n = n(),
-    n_percent = paste0(format(round((n()/nrow(.))*100, digits = 2), nsmall = 2), " %")
+    n_percent = paste0(format(round((n()/nrow(.))*100, digits = 2), nsmall = 2), 
+                       " %")
   ) %>%
   unique() %>% 
   arrange(visit_count)

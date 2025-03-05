@@ -20,11 +20,13 @@ library(here)
 
 
 # Import the data that will be used to create the tables.
-soc_dem_path <- here::here("data", "cleaned_rds_files", "sociodemographic_information_import.rds")
+soc_dem_path <- here::here("data", "cleaned_rds_files", 
+                           "sociodemographic_information_import.rds")
 soc_dem <- readRDS(soc_dem_path)
 
 # Import data frame containing description of variables
-soc_dem_desc_path <- here::here("sections", "variable_descriptions", "sociodemographic_information_var_desc.rds")
+soc_dem_desc_path <- here::here("data", "variable_descriptions", 
+                                "sociodemographic_information_var_desc.rds")
 soc_dem_desc <- readRDS(soc_dem_desc_path)
 
 # Import functions that will be used to calculate statistics
@@ -38,9 +40,6 @@ source(here::here("R", "n_percent_ci.R"))
   
 # Import function that will merge unique ID to data set
 source(here::here("R", "merge_unique_id_to_detect_data_set.R"))  
-
-# Import function that will create a data set with only the first visit for each unique person
-source(here::here("R", "unique_people.R"))
 ```
 
 <!-- ## Create a data set with only the first visit for each unique person -->
@@ -50,11 +49,13 @@ source(here::here("R", "unique_people.R"))
 # Merge unique ID to sociodemographic information data set
 soc_dem <- merge_id(soc_dem)
 
-# List of dfs of unique people and whether they were visited one or multiple times 
-socio_demo_unique_list <- unique_people(soc_dem)
-
-# Extract df containing only the first visits for each participant
-socio_demo <- socio_demo_unique_list$df_first_visit_only
+# First visit data for each unique participant
+socio_demo <- soc_dem %>%
+  group_by(unique_id) %>%
+  arrange(as.POSIXct(x_created_timestamp), .by_group = TRUE) %>%
+  mutate(
+    visit_no = row_number()
+  ) %>% filter(visit_no == 1) %>% ungroup()
 ```
 
 <!-- ## Create lists of columns to analyze -->
@@ -62,13 +63,14 @@ socio_demo <- socio_demo_unique_list$df_first_visit_only
 ```{r}
 #| echo: false
 
-socio_demo_cat_cols <- socio_demo %>% select(ends_with("cat_f")) %>% select(order(colnames(.))) %>% names()
+socio_demo_cat_cols <- socio_demo %>% select(ends_with("cat_f")) %>% 
+  select(order(colnames(.))) %>% names()
 ```
 
 ```{r}
 #| echo: false
 
-socio_demo_cont_cols <- c("sode_age_years", "sode_people_cont")
+socio_demo_cont_cols <- c("sode_age_years", "sode_people_9cat")
 ```
 
 <!-- ## Create data frames that contains overall summary statistics for categorical and continuous data -->
@@ -133,7 +135,8 @@ socio_demo_cat_table <- socio_demo_cat_table %>%
 ```{r}
 #| echo: false
 # Split data frame into list of data frames by variable
-socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$var)
+socio_demo_cat_table_list <- split(socio_demo_cat_table, 
+                                   socio_demo_cat_table$var)
 
 ```
 
@@ -143,7 +146,9 @@ socio_demo_cat_table_list <- split(socio_demo_cat_table, socio_demo_cat_table$va
 
 ```{r, echo = FALSE}
 # Create flextable
-cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "description",  "n", "formatted_stats")) %>%
+cont_flextable <- flextable(socio_demo_cont_table, 
+                            col_keys = c("var", "description",  "n", 
+                                         "formatted_stats")) %>%
   # Rename columns
   set_header_labels(
     var = "Variable",
@@ -160,7 +165,8 @@ cont_flextable <- flextable(socio_demo_cont_table, col_keys = c("var", "descript
   ) %>%
   
   # Add border lines to header and format header
-  border(i = 1, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+  border(i = 1, part = "header", border.top = fp_border(color = "black"), 
+         border.bottom = fp_border(color = "black")) %>%
   bold(i = 1, part = "header", bold = FALSE) %>%
   
   # Set header alignment
@@ -183,10 +189,12 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", 
+                                           "formatted_stats")) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -209,7 +217,8 @@ cat_flextable <- function(var_name, table_list = socio_demo_cat_table_list) {
       ) %>%
       
       # Add border lines to header and format header
-      border(i = 3, part = "header", border.top = fp_border(color = "black"), border.bottom = fp_border(color = "black")) %>%
+      border(i = 3, part = "header", border.top = fp_border(color = "black"), 
+             border.bottom = fp_border(color = "black")) %>%
       bold(i = c(2,3), part = "header", bold = FALSE) %>%
       
       # Set width and alignment
@@ -255,7 +264,9 @@ soc_doc <- soc_doc %>%
   body_add_par("") %>%
   
   # Add continuous variable table to Word document
-  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), width = c(1.7, 2.7, 0.7, 1.7), unit = "in"), align = "left") %>%
+  body_add_flextable(width(cont_flextable, j = c(1,2,3,4), 
+                           width = c(1.7, 2.7, 0.7, 1.7), unit = "in"), 
+                     align = "left") %>%
   body_add_par("") %>%
   
   # Add Heading
@@ -266,7 +277,8 @@ soc_doc <- soc_doc %>%
 for (var_name in socio_demo_cat_cols) {
   cat_flex <- cat_flextable(var_name)
   # Set width of tables
-  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), unit = "in") %>%
+  cat_flex <- cat_flex %>% width(j = c(1,2,3,4), width = c(2, 2.7, 0.7, 1.4), 
+                                 unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -281,7 +293,8 @@ for (var_name in socio_demo_cat_cols) {
   
 
 # print the word document
-print(soc_doc, target = here::here("sections", "sociodemographic_information_tables.docx"))
+print(soc_doc, target = here::here("sections", 
+                                   "sociodemographic_information_tables.docx"))
 ```
 
 ```{r}

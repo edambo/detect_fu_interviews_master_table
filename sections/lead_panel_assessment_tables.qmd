@@ -49,7 +49,10 @@ par <- readRDS(par_path)
 source(here::here("R", "lead_positive_votes_analysis.R"))
 
 # Function for creating a formatted confusion matrix
-source(here::here("R", "lead_determination_vs_detect_tool_confusion_matrix_by_abuse_type.R"))
+source(
+  here::here(
+    "R", "lead_determination_vs_detect_tool_confusion_matrix_by_abuse_type.R")
+  )
 
 # Function used for counting unique cases
 source(here::here("R", "unique_case_count.R"))
@@ -75,21 +78,36 @@ source(here::here("R", "n_percent_ci.R"))
 
 lead_desc <- tribble(
  ~var, ~description,
- "physical_abuse_det", "LEAD Assessment physical abuse determination based on majority vote.",
- "sexual_abuse_det", "LEAD Assessment sexual abuse determination based on majority vote.",
- "emotional_psycho_abuse_det", "LEAD Assessment emotional/ psychological abuse determination based on majority vote.",
- "neglect_det", "LEAD Assessment neglect determination based on majority vote.",
- "self_neglect_det", "LEAD Assessment self-neglect determination based on majority vote.",
- "financial_exploitation_det", "LEAD Assessment financial exploitation determination based on majority vote.",
- "abandonment_det", "LEAD Assessment abandonment determination based on majority vote.",
- "physical_abuse_any", "At least one LEAD panelist voted 'Yes' for physical abuse.",
- "sexual_abuse_any", "At least one LEAD panelist voted 'Yes' for sexual abuse.",
- "emotional_psycho_abuse_any", "At least one LEAD panelist voted 'Yes' for emotional/ psychological abuse.",
- "neglect_any", "At least one LEAD panelist voted 'Yes' for neglect.",
- "self_neglect_any", "At least one LEAD panelist voted 'Yes' for self-neglect.",
- "financial_exploitation_any", "At least one LEAD panelist voted 'Yes' for financial exploitation.",
- "abandonment_any", "At least one LEAD panelist voted  'Yes' for abandonment.",
- "abuse_any", "There is a positive LEAD Panel Assessment abuse determination based on majority vote for any abuse type."
+ "physical_abuse_det", 
+ "LEAD Assessment physical abuse determination based on majority vote.",
+ "sexual_abuse_det", 
+ "LEAD Assessment sexual abuse determination based on majority vote.",
+ "emotional_psycho_abuse_det", 
+ "LEAD Assessment emotional/ psychological abuse determination based on majority vote.",
+ "neglect_det", 
+ "LEAD Assessment neglect determination based on majority vote.",
+ "self_neglect_det", 
+ "LEAD Assessment self-neglect determination based on majority vote.",
+ "financial_exploitation_det", 
+ "LEAD Assessment financial exploitation determination based on majority vote.",
+ "abandonment_det", 
+ "LEAD Assessment abandonment determination based on majority vote.",
+ "physical_abuse_any", 
+ "At least one LEAD panelist voted 'Yes' for physical abuse.",
+ "sexual_abuse_any", 
+ "At least one LEAD panelist voted 'Yes' for sexual abuse.",
+ "emotional_psycho_abuse_any", 
+ "At least one LEAD panelist voted 'Yes' for emotional/ psychological abuse.",
+ "neglect_any", 
+ "At least one LEAD panelist voted 'Yes' for neglect.",
+ "self_neglect_any", 
+ "At least one LEAD panelist voted 'Yes' for self-neglect.",
+ "financial_exploitation_any", 
+ "At least one LEAD panelist voted 'Yes' for financial exploitation.",
+ "abandonment_any", 
+ "At least one LEAD panelist voted  'Yes' for abandonment.",
+ "abuse_any", 
+ "There is a positive LEAD Panel Assessment abuse determination based on majority vote for any abuse type."
 )
 
 ```
@@ -171,7 +189,10 @@ The final abuse determination is the result of the majority vote of the secondar
 
 ```{r}
 #| echo: false
-final_det_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det", "abuse_any")
+final_det_cols <- c("physical_abuse_det", "sexual_abuse_det",  
+                    "emotional_psycho_abuse_det",  "neglect_det",  
+                    "self_neglect_det",  "financial_exploitation_det",  
+                    "abandonment_det", "abuse_any")
 ```
 
 <!-- ## Create a data frame that contains summary statistics -->
@@ -222,11 +243,14 @@ cat_flextable_4 <- function(var_name, table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
   format_border <- fp_border(color = "black")
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, 
+                          col_keys = c("var", "cat", "n", "formatted_stats")
+                          ) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -263,7 +287,8 @@ cat_flextable_4 <- function(var_name, table_list) {
 ```
 
 ```{r, results ='asis', echo=FALSE}
-final_det_flex <- lapply(final_det_cols, cat_flextable_4, table_list = final_det_table_list)
+final_det_flex <- lapply(final_det_cols, cat_flextable_4, 
+                         table_list = final_det_table_list)
 
 for (x in 1:length(final_det_cols)) {
   cat(knit_print(final_det_flex[[x]]))
@@ -276,7 +301,10 @@ for (x in 1:length(final_det_cols)) {
 
 ```{r}
 #| echo: false
-maj_det_cols <- c("physical_abuse_det", "sexual_abuse_det",  "emotional_psycho_abuse_det",  "neglect_det",  "self_neglect_det",  "financial_exploitation_det",  "abandonment_det", "abuse_any")
+maj_det_cols <- c("physical_abuse_det", "sexual_abuse_det",  
+                  "emotional_psycho_abuse_det",  "neglect_det",  
+                  "self_neglect_det",  "financial_exploitation_det",  
+                  "abandonment_det", "abuse_any")
 ```
 
 <!-- ## Create a data frame that contains summary statistics -->
@@ -351,11 +379,13 @@ cat_flextable <- function(var_name, table_list) {
   
   # Set up table header line text including variable name and description
   title_cap <- as_paragraph(var_name)
-  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% as_paragraph()
+  desc_cap <- df %>% select(description) %>% unique() %>% toString() %>% 
+    as_paragraph()
   format_border <- fp_border(color = "black")
     
     # Create flextable
-    flex_tab <- flextable(df, col_keys = c("var", "cat", "assessment_type", "n", "formatted_stats")) %>%
+    flex_tab <- flextable(df, col_keys = c("var", "cat", "assessment_type", "n", 
+                                           "formatted_stats")) %>%
       # Rename columns
       set_header_labels(
         var = "Variable", 
@@ -396,7 +426,8 @@ cat_flextable <- function(var_name, table_list) {
 ```
 
 ```{r, results ='asis', echo=FALSE}
-maj_det_flex <- lapply(maj_det_cols, cat_flextable, table_list = maj_det_table_list)
+maj_det_flex <- lapply(maj_det_cols, cat_flextable, table_list = 
+                         maj_det_table_list)
 
 for (x in 1:length(maj_det_cols)) {
   cat(knit_print(maj_det_flex[[x]]))
@@ -412,7 +443,10 @@ For each assessment (initial, secondary, and post-DETECT), at least one LEAD pan
 
 ```{r}
 #| echo: false
-any_pos_cols <- c("physical_abuse_any",  "sexual_abuse_any",  "emotional_psycho_abuse_any",  "neglect_any",  "self_neglect_any",  "financial_exploitation_any", "abandonment_any")
+any_pos_cols <- c("physical_abuse_any",  "sexual_abuse_any",  
+                  "emotional_psycho_abuse_any",  "neglect_any",  
+                  "self_neglect_any",  "financial_exploitation_any", 
+                  "abandonment_any")
 ```
 
 <!-- ## Create a data frame that contains summary statistics -->
@@ -476,7 +510,8 @@ any_pos_table_list <- split(any_pos_table, any_pos_table$var)
 ```
 
 ```{r, results ='asis', echo=FALSE}
-any_pos_flex <- lapply(any_pos_cols, cat_flextable, table_list = any_pos_table_list)
+any_pos_flex <- lapply(any_pos_cols, cat_flextable, table_list = 
+                         any_pos_table_list)
 
 for (x in 1:length(any_pos_cols)) {
   cat(knit_print(any_pos_flex[[x]]))
@@ -500,19 +535,23 @@ lead_doc <- read_docx()
 lead_doc <- lead_doc %>%
   
   # Add Heading
-  body_add_fpar(fpar(ftext("LEAD Panel Assessment Tables", prop = title_style))) %>%
+  body_add_fpar(fpar(ftext("LEAD Panel Assessment Tables", 
+                           prop = title_style))) %>%
   body_add_par("") %>%
   
   # Add confusion matrix heading and tables
-  body_add_fpar(fpar(ftext("Initial MedStar Medic DETECT Tool Abuse Determination vs LEAD Panel Assessment Final Determination", 
+  body_add_fpar(
+    fpar(ftext("Initial MedStar Medic DETECT Tool Abuse Determination vs LEAD Panel Assessment Final Determination", 
                            prop = subtitle_style))) %>%
   body_add_flextable(conf_mat) %>%
   body_add_flextable(conf_calc, align = "left") %>%
   body_add_par("") %>%
   
   # Add Unique MedStar ID heading and summary table
-  body_add_fpar(fpar(ftext("Unique Medstar ID Summary", prop = subtitle_style))) %>%
-  body_add_flextable(width(unique_case_flextable, width = 2.27, unit = "in"), align = "left") %>%
+  body_add_fpar(fpar(ftext("Unique Medstar ID Summary", prop = subtitle_style))
+                ) %>%
+  body_add_flextable(width(unique_case_flextable, width = 2.27, unit = "in"), 
+                     align = "left") %>%
   body_add_par("")
   
 # Add final determination heading and tables  
@@ -520,12 +559,15 @@ lead_doc <- lead_doc %>%
   body_add_break() %>%
 
   # Add Heading
-  body_add_fpar(fpar(ftext("Final LEAD Panel Assessment Abuse Determination", prop = subtitle_style))) 
+  body_add_fpar(fpar(ftext("Final LEAD Panel Assessment Abuse Determination", 
+                           prop = subtitle_style))) 
 
 for (var_name in final_det_cols) {
   final_det_flex <- cat_flextable_4(var_name, final_det_table_list)
   # Set width of tables
-  final_det_flex <- final_det_flex %>% width(j = c(1,2,3,4), width = c(2, 1.4, 1.4, 2), unit = "in") %>%
+  final_det_flex <- final_det_flex %>% width(j = c(1,2,3,4), 
+                                             width = c(2, 1.4, 1.4, 2), 
+                                             unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -542,12 +584,16 @@ lead_doc <- lead_doc %>%
   body_add_break() %>%
 
   # Add Heading
-  body_add_fpar(fpar(ftext("LEAD Panel Assessment Determination Based on Majority Vote", prop = subtitle_style)))
+  body_add_fpar(fpar(
+    ftext("LEAD Panel Assessment Determination Based on Majority Vote", 
+          prop = subtitle_style)))
 
 for (var_name in maj_det_cols) {
   maj_det_flex <- cat_flextable(var_name, maj_det_table_list)
   # Set width of tables
-  maj_det_flex <- maj_det_flex %>% width(j = c(1,2,3,4,5), width = c(2, 1, 1.4, 0.7, 1.7), unit = "in") %>%
+  maj_det_flex <- maj_det_flex %>% width(j = c(1,2,3,4,5), 
+                                         width = c(2, 1, 1.4, 0.7, 1.7), 
+                                         unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
@@ -572,7 +618,9 @@ lead_doc <- lead_doc %>%
 for (var_name in any_pos_cols) {
   any_pos_flex <- cat_flextable(var_name, any_pos_table_list)
   # Set width of tables
-  any_pos_flex <- any_pos_flex %>% width(j = c(1,2,3,4,5), width = c(2, 1, 1.4, 0.7, 1.7), unit = "in") %>%
+  any_pos_flex <- any_pos_flex %>% width(j = c(1,2,3,4,5), 
+                                         width = c(2, 1, 1.4, 0.7, 1.7), 
+                                         unit = "in") %>%
     # Remove space for document view
     delete_part(part = "footer") %>%
     # Prevent table breaking up into different pages.
